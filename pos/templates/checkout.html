@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main>
+    <div class="container-fluid">
+        <!--                        <h1 class="mt-4">Products</h1>-->
+        <ol class="breadcrumb mb-4 mt-2">
+            <li class="breadcrumb-item active">My Cart</li>
+        </ol>
+
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-cart-plus mr-1"></i>
+                <a href="{% url 'myapp:MyCartView' %}">To Update Cart</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Item Name</th>
+                            <th>Rate</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+<!--                            <th>Edit</th>-->
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+<!--                            <th>Item Code</th>-->
+<!--                            <th>Item Name</th>-->
+<!--                            <th>Sale Price</th>-->
+<!--                            <th>Warranty</th>-->
+<!--                            <th>Add to Cart-->
+<!--                            <th>Edit</th>-->
+
+                        </tr>
+                        </tfoot>
+                        <tbody>
+
+                        {% for p in cart.cartproduct_set.all %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td><a href="#">{{p.product.title}}</a></td>
+                            <td>{{p.rate}}</td>
+                            <td>{{p.quantity}}</td>
+                            <td>{{p.subtotal}}</td>
+
+
+                        </tr>
+                        {% endfor %}
+
+                        <tr>
+                            <td colspan="4" class="text-right">Amount :</td>
+                            <td>{{cart.total}}</td>
+<!--                            <td></td>-->
+
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right">Tax :</td>
+                            <td>{{cart.tax}}</td>
+<!--                            <td></td>-->
+
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-right">Total :</td>
+                            <td>{{cart.super_total}}</td>
+
+
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-user mr-1"></i>
+                <a href="#">Customer Detail</a>
+            </div>
+            <div class="card-body">
+                <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                    {{form}}
+                    <input type="submit" class="btn btn-primary" value="Create Invoice">
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock content %}

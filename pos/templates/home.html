@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card-box mb-30">
+						<div class="pd-20">
+							<h4 class="text-blue h4">Items List</h4>
+
+						</div>
+						<div class="pb-20">
+							<table class="data-table table stripe hover nowrap">
+								<thead>
+									<tr>
+										<th class="table-plus datatable-nosort">Item Name</th>
+										<th>Category</th>
+										<th>Sale Price</th>
+										<th>Balance Qty</th>
+										<th>Add to Cart</th>
+<!--										<th class="datatable-nosort">Action</th>-->
+									</tr>
+								</thead>
+								<tbody>
+								{% for p in product_list %}
+									<tr>
+										<td class="table-plus">{{p.item_name}}</td>
+										<td>{{p.category}}</td>
+										<td>{{p.sell_price}}</td>
+										<td>{{p.balance_qty}}</td>
+										<td><a href="{% url 'myapp:AddToCartView' p.id %}" class="btn btn-sm btn-outline-primary"> Add to Cart</a></td>
+
+									</tr>
+								{% endfor %}
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+{% endblock content %}
+
