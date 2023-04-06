@@ -230,3 +230,62 @@ class CheckoutView(UserRequiredMixin,CreateView):
         return super().form_valid(form)
 
 
+#Product Edit
+class ProductEditView(UserRequiredMixin,View):
+    def get(self,request, pk):
+        pi = Items.objects.get(id=pk)
+        fm = AdminProductEditForm(instance=pi)
+        return render(request,'productedit.html', {'form':fm})
+
+    def post(self, request, pk):
+        pi = Items.objects.get(id=pk)
+        fm = AdminProductEditForm(request.POST,instance=pi)
+        if fm.is_valid():
+            fm.save()
+        return redirect('myapp:HomeView')
+
+class ProductCreate(View):
+    def get(self,request):
+        category = Category.objects.all()
+        item_list = Items.objects.all()
+        message = None
+        context = {'item_list':item_list,'category':category,'message':message}
+        return render(request, 'productcreate.html', context)
+    def post(self,request):
+        item_name = request.POST.get('item_name')
+        category = request.POST.get('category')
+        purchase_price = request.POST.get('purchase_price')
+        sale_price = request.POST.get('sale_price')
+        message = None
+        if not item_name:
+            message = 'please enter item'
+        if not message:
+            item = Items(item_name=item_name,category=category,pruchase_price=purchase_price,sell_price=sale_price)
+            item.save()
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            category = Category.objects.all()
+            item_list = Items.objects.all()
+            context = {'message': message,'category':category,'item_list':item_list}
+            return render(request, 'productcreate.html', context)
+
+class CategoryCreate(View):
+    def get(self,request):
+        category = Category.objects.all()
+        item_list = Items.objects.all()
+        message = None
+        context = {'item_list': item_list, 'category': category, 'message': message}
+        return render(request, 'categorycreate.html', context)
+    def post(self,request):
+        category_name = request.POST.get('category_name')
+        message = None
+        if not category_name:
+            message = 'please enter category name'
+        if not message:
+            cate = Category(category_name=category_name)
+            cate.save()
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            category = Category.objects.all()
+            message = 'please enter category name'
+            return render(request, 'categorycreate.html', {'message':message,'category':category})

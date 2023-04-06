@@ -23,7 +23,7 @@
 								<tbody>
 								{% for p in product_list %}
 									<tr>
-										<td class="table-plus">{{p.item_name}}</td>
+										<td class="table-plus"><a href="{% url 'myapp:ProductEditView' p.id %}">{{p.item_name}}</a></td>
 										<td>{{p.category}}</td>
 										<td>{{p.sell_price}}</td>
 										<td>{{p.balance_qty}}</td>

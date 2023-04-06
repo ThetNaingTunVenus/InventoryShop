@@ -10,11 +10,25 @@ class ULoginForm(forms.Form):
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['ordered_by', 'mobile', 'email']
+        fields = ['ordered_by', 'mobile', 'shipping_address','ordered_staus']
         widgets = {
             'ordered_by': forms.TextInput(attrs={'class': 'form-control'}),
             'mobile': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'shipping_address': forms.TextInput(attrs={'class': 'form-control'}),
+            'ordered_staus': forms.Select(attrs={'class': 'form-control col-md-4'}),
 
         }
 
+
+class AdminProductEditForm(forms.ModelForm):
+    class Meta:
+        model = Items
+        fields = ['item_name','category','pruchase_price','sell_price','balance_qty']
+        widgets = {
+            'item_name': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'category': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'pruchase_price': forms.NumberInput(attrs={'class': 'form-control col-md-6'}),
+            'sell_price': forms.NumberInput(attrs={'class': 'form-control col-md-6'}),
+            'balance_qty': forms.NumberInput(attrs={'class': 'form-control col-md-6', 'readonly':'True'}),
+
+        }

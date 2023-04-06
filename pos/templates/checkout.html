@@ -5,16 +5,16 @@
 
 <main>
     <div class="container-fluid">
-        <!--                        <h1 class="mt-4">Products</h1>-->
-        <ol class="breadcrumb mb-4 mt-2">
-            <li class="breadcrumb-item active">My Cart</li>
-        </ol>
+<!--                                <h5 class="mt-4">{{cart.id}}</h5>-->
+<!--        <ol class="breadcrumb mb-4 mt-2">-->
+<!--            <li class="breadcrumb-item active"></li>-->
+<!--        </ol>-->
 
 
         <div class="card mb-4">
             <div class="card-header">
-                <i class="fas fa-cart-plus mr-1"></i>
-                <a href="{% url 'myapp:MyCartView' %}">To Update Cart</a>
+                <span class="micon bi bi-cart4"></span>
+                <a href="{% url 'myapp:MyCartView' %}">Invoice No <b>{{cart.id}}</b></a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -31,12 +31,6 @@
                         </thead>
                         <tfoot>
                         <tr>
-<!--                            <th>Item Code</th>-->
-<!--                            <th>Item Name</th>-->
-<!--                            <th>Sale Price</th>-->
-<!--                            <th>Warranty</th>-->
-<!--                            <th>Add to Cart-->
-<!--                            <th>Edit</th>-->
 
                         </tr>
                         </tfoot>
@@ -45,7 +39,7 @@
                         {% for p in cart.cartproduct_set.all %}
                         <tr>
                             <td>{{forloop.counter}}</td>
-                            <td><a href="#">{{p.product.title}}</a></td>
+                            <td><a href="#">{{p.product.item_name}}</a></td>
                             <td>{{p.rate}}</td>
                             <td>{{p.quantity}}</td>
                             <td>{{p.subtotal}}</td>
@@ -82,13 +76,15 @@
 
         <div class="card mb-4">
             <div class="card-header">
-                <i class="fas fa-user mr-1"></i>
-                <a href="#">Customer Detail</a>
+
+                <a href="#"><h5>Customer Detail</h5></a>
             </div>
             <div class="card-body">
                 <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
                     {{form}}
+                    <hr>
                     <input type="submit" class="btn btn-primary" value="Create Invoice">
+
                 </form>
             </div>
         </div>

@@ -46,7 +46,7 @@ class CartProduct(models.Model):
         return "Cart : "+ str(self.cart.id)+ "CartProduct : " + str(self.id)
 
 STATUS=(
-    ("Ordering","Ordering"),("Accept","Accept"),("Cash","Cash"),("Credit","Credit"),("Consignment","Consignment"),("Complete","Complete")
+    ("Ordering","Ordering"),("Delivered","Delivered"),("Cash","Cash"),("Credit","Credit"),("Consignment","Consignment"),("Complete","Complete")
 )
 
 
