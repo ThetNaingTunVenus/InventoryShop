@@ -23,5 +23,6 @@ urlpatterns = [
     path('PurchaseReport/', PurchaseReport.as_view(), name='PurchaseReport'),
 
     path('SaleInvoiceView/', SaleInvoiceView.as_view(), name='SaleInvoiceView'),
+    path('SaleInvoiceReportFilter/', SaleInvoiceReportFilter.as_view(), name='SaleInvoiceReportFilter'),
 
 ]

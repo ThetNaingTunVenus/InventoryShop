@@ -306,6 +306,33 @@ class SaleInvoiceView(UserRequiredMixin,View):
         }
         return render(request, 'invoicelist.html', context)
 
+class SaleInvoiceReportFilter(View):
+    def get(self,request):
+        queryset = Order.objects.all()
+        sum = queryset.aggregate(Sum('all_total'))['all_total__sum']
+        context={'queryset':queryset,'sum':sum}
+        return render(request, 'salereportfilter.html', context)
+    def post(self,request):
+        fromdate = request.POST.get('fromdate')
+        todate = request.POST.get('todate')
+        message = None
+        if not fromdate:
+            message = 'select from date'
+        elif not todate:
+            message = 'select to date'
+        if not message:
+            queryset =Order.objects.filter(created_at__range=[fromdate, todate])
+            sum = queryset.aggregate(Sum('all_total'))['all_total__sum']
+            context = {'queryset':queryset,'sum':sum}
+            return render(request, 'salereportfilter.html', context)
+
+        else:
+            message = 'Select From Date and To Date to filter Sale Reports...'
+            context = {'message': message}
+            return render(request, 'salereportfilter.html', context)
+
+
+
 ######## Supplier ##############
 class SupplierCreate(View):
     def get(self,request):

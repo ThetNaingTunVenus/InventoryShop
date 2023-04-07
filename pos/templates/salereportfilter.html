@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!--filter form-->
+<div class="pd-20 card-box mb-30">
+    <div class="clearfix">
+        <div class="pull-left">
+<!--            <h4 class="text-blue h4">Filter Report</h4>-->
+
+        </div>
+    </div>
+    <form action="{% url 'myapp:SaleInvoiceReportFilter' %}" method="post">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>From Date</label>
+                    <input type="date" name="fromdate" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="form-group">
+                    <label>To Date</label>
+                    <input type="date" name="todate" class="form-control">
+                </div>
+            </div>
+
+        </div>
+        <button
+                type="submit"
+                class="btn btn-sm"
+                data-bgcolor="#00b489"
+                data-color="#ffffff"
+        >
+            <i class="icon-copy dw dw-filter-1"></i>Filter Report
+
+        </button>
+        <div>
+            {% if message %}
+            <hr>
+        <a href="{{current_path}}" class="text-danger">{{message}}</a>
+        {% endif %}
+        </div>
+
+
+    </form>
+</div>
+
+
+<!-- Export Datatable start -->
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <h4 class="text-blue h4">Invoice List</h4>
+    </div>
+    <div class="pb-20">
+        <table
+                class="table hover multiple-select-row data-table-export nowrap"
+        >
+            <thead>
+            <tr>
+                <th class="table-plus datatable-nosort">Customer Name</th>
+                <th>Invoice No</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in queryset %}
+            <tr>
+                <td class="table-plus">{{p.ordered_by}}</td>
+                <td><a href="#"><strong>{{p.id}}</strong></a></td>
+                <td>{{p.all_total}}</td>
+                <td>{{p.created_at}}</td>
+                <td data-color="red">{{p.ordered_staus}}</td>
+
+            </tr>
+            {% endfor %}
+
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>Grand Total</td>
+                <td><strong>{{sum}}</strong></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+<!-- Export Datatable End -->
+{% endblock content %}
