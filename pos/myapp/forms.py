@@ -32,3 +32,15 @@ class AdminProductEditForm(forms.ModelForm):
             'balance_qty': forms.NumberInput(attrs={'class': 'form-control col-md-6', 'readonly':'True'}),
 
         }
+
+class SupplierEditForm(forms.ModelForm):
+    class Meta:
+        model = Supplier
+        fields = ['supplier_name','phone_number','address']
+        widgets = {
+            'supplier_name': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'address': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+        }
+
+

@@ -16,4 +16,12 @@ urlpatterns = [
     path('checkout/', CheckoutView.as_view(), name='CheckoutView'),
     path('empty/', EmptyCartView.as_view(), name='EmptyCartView'),
 
+    path('SupplierCreate/', SupplierCreate.as_view(), name='SupplierCreate'),
+    path('SupplierEdit/<int:pk>/', SupplierEdit.as_view(), name='SupplierEdit'),
+    path('PurchaseCreateView/<int:id>/', PurchaseCreateView.as_view(), name='PurchaseCreateView'),
+    path('PurchaseData/', PurchaseData.as_view(), name='PurchaseData'),
+    path('PurchaseReport/', PurchaseReport.as_view(), name='PurchaseReport'),
+
+    path('SaleInvoiceView/', SaleInvoiceView.as_view(), name='SaleInvoiceView'),
+
 ]

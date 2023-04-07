@@ -7,6 +7,14 @@ class Test(models.Model):
     def __str__(self):
         return self.name
 
+class Supplier(models.Model):
+    supplier_name = models.CharField(max_length=225)
+    phone_number = models.CharField(max_length=225)
+    address = models.CharField(max_length=225)
+
+    def __del__(self):
+        return self.supplier_name
+
 class Category(models.Model):
     category_name = models.CharField(max_length=225)
 
@@ -62,9 +70,20 @@ class Order(models.Model):
     tax = models.PositiveIntegerField()
     all_total = models.PositiveIntegerField()
     ordered_staus = models.CharField(max_length=255, choices=STATUS, default='Ordering')
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return "Order : " + str(self.id)
 
 
+class PurchaseList(models.Model):
+    supplier_name = models.CharField(max_length=225)
+    item_name = models.CharField(max_length=225)
+    purchase_qty = models.IntegerField(default=0)
+    purchase_price = models.IntegerField(default=0)
+    sale_price = models.IntegerField(default=0)
+    p_date = models.DateField()
+    created_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.item_name

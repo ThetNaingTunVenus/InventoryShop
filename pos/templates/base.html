@@ -163,7 +163,7 @@
 <!--						</div>-->
 <!--					</form>-->
 <!--				</div>-->
-				<div><a href="#"><b class="text-primary">Company Name Shop Name</b></a></div>
+				<div><b class="text-primary"><h4>Shop Name</h4></b></div>
 			</div>
 			<div class="header-right">
 				<div class="dashboard-setting user-notification">
@@ -187,15 +187,15 @@
 							data-toggle="dropdown"
 						>
 							<span class="user-icon">
-								<img src="{% static 'vendors/images/photo7.jpg' %}" alt="" />
+								<img src="{% static 'vendors/images/apple-touch-icon.png' %}" alt="" />
 							</span>
-							<span class="user-name">{{request.user}}</span>
+							<span class="user-name"></span>
 						</a>
 						<div
 							class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
 						>
 							<a class="dropdown-item" href="#"
-								><i class="dw dw-user1"></i> Profile</a
+								><i class="dw dw-user1"></i> {{request.user}}</a
 							>
 
 							<a class="dropdown-item" href="logout/"
@@ -401,29 +401,42 @@
 								><span class="mtext">Home</span>
 							</a>
 						</li>
+
 						<li>
-							<a href="/mycart" class="dropdown-toggle no-arrow">
-								<span class="micon bi bi-cart4"></span
-								><span class="mtext">Shopping Cart</span>
+							<a href="{% url 'myapp:PurchaseData' %}" class="dropdown-toggle no-arrow">
+								<span class="micon bi bi-truck"></span
+								><span class="mtext">Purchase</span>
 							</a>
 						</li>
 						<li class="dropdown">
 							<a href="javascript:;" class="dropdown-toggle">
-								<span class="micon bi bi-gift"></span
-								><span class="mtext">Products/Category</span>
+								<span class="micon bi bi-graph-up-arrow"></span
+								><span class="mtext">Reports</span>
+							</a>
+							<ul class="submenu">
+								<li><a href="{% url 'myapp:SaleInvoiceView' %}">Cash Sale</a></li>
+								<li><a href="{% url 'myapp:ProductCreate' %}">Sale Order</a></li>
+<!--								<li><a href="#">Dashboard style 3</a></li>-->
+							</ul>
+						</li>
+						<li class="dropdown">
+							<a href="javascript:;" class="dropdown-toggle">
+								<span class="micon bi bi-tools"></span
+								><span class="mtext">Setup</span>
 							</a>
 							<ul class="submenu">
 								<li><a href="{% url 'myapp:CategoryCreate' %}">Category</a></li>
 								<li><a href="{% url 'myapp:ProductCreate' %}">Product</a></li>
-<!--								<li><a href="#">Dashboard style 3</a></li>-->
+								<li><a href="{% url 'myapp:SupplierCreate' %}">Supplier</a></li>
 							</ul>
 						</li>
-						<li>
-							<a href="{% url 'myapp:ProductCreate' %}" class="dropdown-toggle no-arrow">
-								<span class="micon bi bi-truck"></span
-								><span class="mtext">Order Status</span>
-							</a>
-						</li>
+
+<!--						<li>-->
+<!--							<a href="{% url 'myapp:SupplierCreate' %}" class="dropdown-toggle no-arrow">-->
+<!--								<span class="micon bi bi-person-rolodex"></span-->
+<!--								><span class="mtext">Supplier</span>-->
+<!--							</a>-->
+<!--						</li>-->
 
 						<li>
 							<div class="dropdown-divider"></div>
@@ -461,12 +474,12 @@
 					<!-- Simple Datatable End -->
 
 				</div>
-				<div class="footer-wrap pd-20 mb-20 card-box">
-					Developed By
-					<a href="#" target="_blank"
-						>kothet</a
-					>
-				</div>
+<!--				<div class="footer-wrap pd-20 mb-20 card-box">-->
+<!--					Developed By-->
+<!--					<a href="#" target="_blank"-->
+<!--						>kothet</a-->
+<!--					>-->
+<!--				</div>-->
 			</div>
 		</div>
 		<!-- welcome modal start -->
