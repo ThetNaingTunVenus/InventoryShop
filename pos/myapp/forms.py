@@ -10,12 +10,12 @@ class ULoginForm(forms.Form):
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['ordered_by', 'mobile', 'shipping_address','ordered_staus']
+        fields = ['ordered_by', 'mobile', 'shipping_address']
         widgets = {
             'ordered_by': forms.TextInput(attrs={'class': 'form-control'}),
             'mobile': forms.TextInput(attrs={'class': 'form-control'}),
             'shipping_address': forms.TextInput(attrs={'class': 'form-control'}),
-            'ordered_staus': forms.Select(attrs={'class': 'form-control col-md-4'}),
+            # 'ordered_staus': forms.Select(attrs={'class': 'form-control col-md-4'}),
 
         }
 
@@ -43,4 +43,18 @@ class SupplierEditForm(forms.ModelForm):
             'address': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
         }
 
+class DamageProductForm(forms.ModelForm):
+    class Meta:
+        model = CartProduct
+        fields = ['product','rate','quantity']
+        widgets = {
+            'product': forms.Select(attrs={'class': 'form-control','readonly':'True'}),
+            'rate': forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
+            'quantity': forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
+        }
 
+class StatusChangeForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['ordered_staus']
+        widgets = {'ordered_staus':forms.Select(attrs={'class':'form-control col-md-4'})}

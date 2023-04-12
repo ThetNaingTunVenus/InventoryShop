@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="row pb-10">
+					<div class="col-xl-4 col-lg-4 col-md-6 mb-20">
+						<div class="card-box height-100-p widget-style3">
+							<div class="d-flex flex-wrap">
+								<div class="widget-data">
+									<div class="weight-700 font-24 text-dark">{{purchase_total}}</div>
+									<div class="font-14 text-secondary weight-500">
+										Purchase
+									</div>
+								</div>
+								<div class="widget-icon">
+									<div class="icon" data-color="#00eccf">
+										<i class="icon-copy dw dw-factory"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 col-lg-4 col-md-6 mb-20">
+						<div class="card-box height-100-p widget-style3">
+							<div class="d-flex flex-wrap">
+								<div class="widget-data">
+									<div class="weight-700 font-24 text-dark">{{sale_total}}</div>
+									<div class="font-14 text-secondary weight-500">
+										Total Sale
+									</div>
+								</div>
+								<div class="widget-icon">
+									<div class="icon" data-color="#ff5b5b">
+<!--										<span class="icon-copy ti-heart"></span>-->
+										<i class="icon-copy dw dw-shopping-cart1"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xl-4 col-lg-4 col-md-6 mb-20">
+						<div class="card-box height-100-p widget-style3">
+							<div class="d-flex flex-wrap">
+								<div class="widget-data">
+									<div class="weight-700 font-24 text-dark">${{exp_total}}</div>
+									<div class="font-14 text-secondary weight-500">Ledger</div>
+								</div>
+								<div class="widget-icon">
+									<div class="icon" data-color="#09cc06">
+										<i class="icon-copy dw dw-wallet-1"></i>
+<!--										<i class="icon-copy fa fa-money" aria-hidden="true"></i>-->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+<!--=============================================================-->
+<!-- Export Datatable start -->
+<div class="card-box mb-30">
+    <div class="pd-20">
+        <h6 class="text-blue h4">BestBuy Items</h6>
+		<hr>
+    </div>
+    <div class="pb-20">
+        <table
+                class="table hover data-table-export nowrap table-striped"
+        >
+            <thead>
+            <tr class="table-warning">
+
+                <th class="">Item Name</th>
+                <th class="">Category</th>
+                <th class=""> Quantity</th>
+                <th class="">Price</th>
+<!--                <th class="">Date</th>-->
+
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for p in c_product %}
+            <tr class="table-info">
+                <td class="table-plus"><b>{{p.item_name}}</b></td>
+                 <td><b>{{p.category}}</b></td>
+                <td><b>{{p.balance_qty}}</b></td>
+                <td><b>{{p.sell_price}}</b></td>
+<!--                <td><b>{{p.expense_date}}</b></td>-->
+
+            </tr>
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<!-- Export Datatable End -->
+{% endblock content %}

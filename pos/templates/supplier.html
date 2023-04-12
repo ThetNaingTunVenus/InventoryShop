@@ -63,7 +63,7 @@
     <div class="pb-20">
         <table class="data-table table stripe hover nowrap">
             <thead>
-            <tr>
+            <tr class="table-warning">
 
                 <th class="text-center">Supplier Name</th>
                 <th class="text-center">Phone Number</th>
@@ -75,7 +75,7 @@
             </thead>
             <tbody>
             {% for p in supplier %}
-            <tr>
+            <tr class="table-info">
                 <td class="table-plus text-center"><a href="{% url 'myapp:SupplierEdit' p.id %}"><b>{{p.supplier_name}}</b></a></td>
                 <td>{{p.phone_number}}</td>
                 <td>{{p.address}}</td>

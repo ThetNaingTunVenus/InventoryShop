@@ -72,7 +72,7 @@
     <div class="pb-20">
         <table class="data-table table stripe hover nowrap">
             <thead>
-            <tr>
+            <tr class="table-warning">
 
                 <th>Name</th>
                 <th>Category</th>
@@ -84,7 +84,7 @@
             </thead>
             <tbody>
             {% for p in item_list %}
-            <tr>
+            <tr class="table-info">
                 <td class="table-plus"><a href="{% url 'myapp:ProductEditView' p.id %}"><b>{{p.item_name}}</b></a></td>
                 <td>{{p.category}}</td>
                 <td>{{p.pruchase_price}}</td>

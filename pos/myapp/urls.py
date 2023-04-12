@@ -24,5 +24,21 @@ urlpatterns = [
 
     path('SaleInvoiceView/', SaleInvoiceView.as_view(), name='SaleInvoiceView'),
     path('SaleInvoiceReportFilter/', SaleInvoiceReportFilter.as_view(), name='SaleInvoiceReportFilter'),
+    path('InvoiceDetailView/<int:pk>/', InvoiceDetailView.as_view(), name='InvoiceDetailView'),
+    path('InvoiceStatusChange/<int:pk>/', InvoiceStatusChange.as_view(), name='InvoiceStatusChange'),
+
+    path('DamageItemView/', DamageItemView.as_view(), name='DamageItemView'),
+    path('DamageInvoiceView/<int:id>/', DamageInvoiceView.as_view(), name='DamageInvoiceView'),
+    path('DamageProductView/<int:id>/', DamageProductView.as_view(), name='DamageProductView'),
+    path('DamageReportView/', DamageReportView.as_view(), name='DamageReportView'),
+
+    path('ExpenseLedgerView/<int:id>', ExpenseLedgerView.as_view(), name='ExpenseLedgerView'),
+    path('LedgerImport/', LedgerImport.as_view(), name='LedgerImport'),
+    path('ExpenseReportView/', ExpenseReportView.as_view(), name='ExpenseReportView'),
+    path('ExpenseReportFilter/', ExpenseReportFilter.as_view(), name='ExpenseReportFilter'),
+    path('LedgerCreateView/', LedgerCreateView.as_view(), name='LedgerCreateView'),
+
+    path('DashboardView/', DashboardView.as_view(), name='DashboardView'),
+
 
 ]

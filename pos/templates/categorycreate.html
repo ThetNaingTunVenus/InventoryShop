@@ -46,7 +46,7 @@
     <div class="pb-20">
         <table class="data-table table stripe hover nowrap">
             <thead>
-            <tr>
+            <tr class="table-warning">
 
                 <th class="text-center">Category Name</th>
 
@@ -55,7 +55,7 @@
             </thead>
             <tbody>
             {% for p in category %}
-            <tr>
+            <tr class="table-info">
                 <td class="table-plus text-center"><b>{{p.category_name}}</b></td>
             </tr>
             {% endfor %}

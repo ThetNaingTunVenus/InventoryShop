@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Sum
@@ -7,9 +9,12 @@ from django.urls import reverse_lazy
 
 from .forms import *
 from .models import *
+
+
+
 # Create your views here.
 def test(request):
-    return render(request, 'base.html')
+    return render(request, 'test_inv.html')
 # ===================================================User Log In ===============================
 class UserRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
@@ -50,6 +55,7 @@ class HomeView(UserRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['product_list'] = Items.objects.all().order_by('-id')
+        context['queryset']=Order.objects.filter(created_at=datetime.date.today())
         return context
 
 
@@ -80,7 +86,7 @@ class AddToCartView(UserRequiredMixin,TemplateView):
 
                 cartproduct.save()
                 cart_obj.total += product_obj.sell_price
-                cart_obj.tax = cart_obj.total * 0.05
+                cart_obj.tax = cart_obj.total * 0.00
                 cart_obj.super_total = cart_obj.tax + cart_obj.total
                 cart_obj.save()
                 cartproduct_balance = cartproduct.remain_balance
@@ -97,7 +103,7 @@ class AddToCartView(UserRequiredMixin,TemplateView):
                 item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
 
                 cart_obj.total += product_obj.sell_price
-                cart_obj.tax = cart_obj.total * 0.05
+                cart_obj.tax = cart_obj.total * 0.00
                 cart_obj.super_total = cart_obj.tax + cart_obj.total
                 cart_obj.save()
         else:
@@ -109,7 +115,7 @@ class AddToCartView(UserRequiredMixin,TemplateView):
             cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj, rate=product_obj.sell_price,
                                                      quantity=1, subtotal=product_obj.sell_price,remain_balance=cartproduct_balance)
             cart_obj.total += product_obj.sell_price
-            cart_obj.tax = cart_obj.total * 0.05
+            cart_obj.tax = cart_obj.total * 0.00
             cart_obj.super_total = cart_obj.tax + cart_obj.total
             cart_obj.save()
 
@@ -145,7 +151,7 @@ class ManageCartView(UserRequiredMixin,View):
             cp_obj.subtotal += cp_obj.rate
             cp_obj.save()
             cart_obj.total +=cp_obj.rate
-            cart_obj.tax = cart_obj.total * 0.05
+            cart_obj.tax = cart_obj.total * 0.00
             cart_obj.super_total = cart_obj.tax + cart_obj.total
             cart_obj.save()
         elif action == 'dcr':
@@ -156,7 +162,7 @@ class ManageCartView(UserRequiredMixin,View):
             cp_obj.subtotal -= cp_obj.rate
             cp_obj.save()
             cart_obj.total -= cp_obj.rate
-            cart_obj.tax = cart_obj.total * 0.05
+            cart_obj.tax = cart_obj.total * 0.00
             cart_obj.super_total = cart_obj.tax + cart_obj.total
             cart_obj.save()
             if cp_obj.quantity == 0:
@@ -167,7 +173,7 @@ class ManageCartView(UserRequiredMixin,View):
             item_balance = cp_obj.remain_balance +cp_obj.quantity
 
             item_update = Items.objects.filter(id=cp_obj.product.id).update(balance_qty=item_balance)
-            cart_obj.tax = cart_obj.total * 0.05
+            cart_obj.tax = cart_obj.total * 0.00
             cart_obj.super_total = cart_obj.tax + cart_obj.total
             cart_obj.save()
             cp_obj.delete()
@@ -332,6 +338,29 @@ class SaleInvoiceReportFilter(View):
             return render(request, 'salereportfilter.html', context)
 
 
+class InvoiceDetailView(UserRequiredMixin,DetailView):
+    template_name = 'invoicedetail.html'
+    model = Order
+    context_object_name = 'ord_obj'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['allstatus'] = STATUS
+        return context
+
+class InvoiceStatusChange(View):
+    def get(self, request, pk):
+        pi = Order.objects.get(id=pk)
+        fm = StatusChangeForm(instance=pi)
+        return render(request, 'statuschange.html', {'form': fm})
+
+    def post(self, request, pk):
+        pi = Order.objects.get(id=pk)
+        fm = StatusChangeForm(request.POST, instance=pi)
+        if fm.is_valid():
+            fm.save()
+        return redirect('myapp:SaleInvoiceReportFilter')
+
 
 ######## Supplier ##############
 class SupplierCreate(View):
@@ -460,3 +489,233 @@ class PurchaseReport(View):
             context = {'supplier': supplier, 'message':message}
             return render(request, 'purchasedata.html', context)
 
+
+# DamageItems
+class DamageItemView(View):
+    def get(self,request):
+        invoice = Order.objects.all()
+        context = {'invoice':invoice}
+        return render(request, 'damage_invoice_view.html', context)
+
+class DamageInvoiceView(TemplateView):
+    template_name = 'damage_item_view.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #     # invoice id get from request url
+        inv_id = self.kwargs['id']
+        # get invoice info
+        context['ord_obj'] = Order.objects.get(id=inv_id)
+        return context
+
+class DamageProductView(UserRequiredMixin,View):
+    def get(self,request, id):
+        pi = CartProduct.objects.get(id=id)
+        fm = DamageProductForm(instance=pi)
+        return render(request,'damage_product_view.html', {'form':fm})
+
+    def post(self, request,id):
+        returnqty =request.POST.get('returnqty')
+        return_desc = request.POST.get('return_desc')
+        product = request.POST.get('product')
+        rate = request.POST.get('rate')
+        quantity = request.POST.get('quantity')
+        return_date =datetime.date.today()
+        item_name = Items.objects.get(id=product)
+        message = None
+        if not returnqty:
+            message='uu'
+        elif not return_desc:
+            message = 'uu'
+        if not message:
+            invtentory_date = Items.objects.filter(item_name=item_name)
+            qty = invtentory_date[0].balance_qty
+            remaing = int(qty) - int(returnqty)
+            inv_update = Items.objects.filter(item_name=item_name).update(balance_qty=remaing)
+
+            damage_items = DamageItems(item_name=item_name, quantity=returnqty, description=return_desc,
+                                       return_date=return_date)
+            damage_items.save()
+
+            damage_rp = DamageItems.objects.all()
+            context = {'damage_rp': damage_rp}
+            return render(request, 'damage_report_view.html', context)
+        else:
+            message = 'please enter return qty and description'
+            return render(request,'damage_invoice_view.html', {'message':message})
+
+        # cart_product = CartProduct.objects.get(id=id)
+        # sub_total = cart_product.subtotal
+        # cart_id = cart_product.cart.id
+        #
+        # update_cp_qty = int(quantity)-int(returnqty)
+        # update_sub = int(rate) * int(returnqty)
+        # update_sub_total = int(sub_total)-int(update_sub)
+        #
+        # update_table_cartproduct = CartProduct.objects.filter(id=id,product=product).update(quantity=update_cp_qty, subtotal=update_sub_total)
+        #
+        # get_cart = Cart.objects.filter(id=int(cart_id))
+        #
+        # get_total = get_cart[0].total
+        # get_tax = get_cart[0].tax
+        # get_super_total = get_cart[0].super_total
+        #
+        # cart_total_d = int(get_total)-int(rate)
+        #
+        # cart_super = int(get_super_total)-int(update_sub)
+        # cart_update = Cart.objects.filter(id=int(cart_id))
+        # print(cart_update[0].id)
+        # update(total=int(cart_total_d), super_total=int(cart_super))
+
+class DamageReportView(View):
+    def get(self,request):
+        damage_rp = DamageItems.objects.all()
+        context = {'damage_rp': damage_rp}
+        return render(request, 'damage_report_view.html', context)
+    def post(self,request):
+        fromdate = request.POST.get('fromdate')
+        todate = request.POST.get('todate')
+        message = None
+        if not fromdate:
+            message = 'select from date'
+        elif not todate:
+            message = 'select to date'
+        if not message:
+            damage_rp = DamageItems.objects.filter(return_date__range=[fromdate, todate])
+            context = {'damage_rp': damage_rp}
+            return render(request, 'damage_report_view.html', context)
+        else:
+            message = 'Please Select From Date and To Date'
+            context = {'message': message}
+            return render(request, 'damage_report_view.html', context)
+
+
+
+
+# Expnse
+class ExpenseLedgerView(TemplateView):
+    template_name = 'expense_ledger.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #     # ledger id get from request url
+        ledger_id = self.kwargs['id']
+        #get ledger info
+        context['ledger'] = ExpenseLedger.objects.get(id=ledger_id)
+        return context
+
+class LedgerImport(View):
+    def post(self,request):
+        category = request.POST.get('category')
+        balance = request.POST.get('balance')
+        amount = request.POST.get('amount')
+        message = None
+        if not amount:
+            message = 'Enter Amount'
+        if not message:
+            ledger_balance = int(balance)+int(amount)
+            leger = ExpenseLedger.objects.filter(category=category).update(balance=ledger_balance)
+            title = 'Input Ledger'
+            expense_rep = ExpenseReport(expense_type=title, title=title, category=category, amount=amount,expense_date=datetime.date.today())
+            expense_rep.save()
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            return render(request, 'expense_ledger.html', {'message':message})
+
+class ExpenseReportView(View):
+    def get(self,request):
+        expense_ledger = ExpenseLedger.objects.all()
+        expense_report = ExpenseReport.objects.all()
+        grand_total_amount = expense_report.aggregate(Sum('amount'))['amount__sum']
+        grand_total_ledger = expense_ledger.aggregate(Sum('balance'))['balance__sum']
+        context = {'expense_ledger': expense_ledger,'expense_report':expense_report,'grand_total_amount':grand_total_amount,'grand_total_ledger':grand_total_ledger}
+        return render(request, 'expense_report.html', context)
+    def post(self,request):
+        title = request.POST.get('title')
+        category = request.POST.get('category')
+        amount = request.POST.get('amount')
+        expense_date = request.POST.get('expense_date')
+        expense_type = 'Expense'
+        message = None
+        if not title:
+            message= 'select title'
+        elif not category:
+            message = 'select category'
+        elif not amount:
+            message = 'enter amount'
+        elif not expense_date:
+            message = 'select date'
+        if not message:
+            expense_rep = ExpenseReport(expense_type=expense_type, title=title, category=category, amount=amount,
+                                        expense_date=expense_date)
+            expense_rep.save()
+
+            exp_ledger = ExpenseLedger.objects.filter(category=category)
+            ledger_bal = exp_ledger[0].balance
+            expense_category_balance = int(ledger_bal) - int(amount)
+            ledger_upd = ExpenseLedger.objects.filter(category=category).update(balance=expense_category_balance)
+            return redirect('myapp:ExpenseReportView')
+        else:
+            expense_ledger = ExpenseLedger.objects.all()
+            # expense_report = ExpenseReport.objects.all()
+            context = {'expense_ledger': expense_ledger,'message':message}
+            return render(request, 'expense_report.html', context)
+
+class ExpenseReportFilter(View):
+    def post(self,request):
+        fromdate = request.POST.get('fromdate')
+        todate = request.POST.get('todate')
+        message = None
+        if not fromdate:
+            message = 'select from date'
+        elif not todate:
+            message = 'select to date'
+        if not message:
+            expense_ledger = ExpenseLedger.objects.all()
+            expense_report = ExpenseReport.objects.filter(expense_date__range=[fromdate, todate])
+            grand_total_amount = expense_report.aggregate(Sum('amount'))['amount__sum']
+            grand_total_ledger = expense_ledger.aggregate(Sum('balance'))['balance__sum']
+            # sum_purchase_price = purchasedata.aggregate(Sum('purchase_price'))['purchase_price__sum']
+            context = {'expense_ledger':expense_ledger,'expense_report':expense_report,'grand_total_amount':grand_total_amount,'grand_total_ledger':grand_total_ledger}
+            return render(request, 'expense_report.html', context)
+        else:
+            expense_ledger = ExpenseLedger.objects.all()
+            # expense_report = ExpenseReport.objects.all()
+            context = {'expense_ledger': expense_ledger, 'message': message}
+            return render(request, 'expense_report.html', context)
+
+    def get(self,request):
+        expense_ledger = ExpenseLedger.objects.all()
+        expense_report = ExpenseReport.objects.all()
+        grand_total_amount = expense_report.aggregate(Sum('amount'))['amount__sum']
+        grand_total_ledger = expense_ledger.aggregate(Sum('balance'))['balance__sum']
+        context = {'expense_ledger': expense_ledger,'expense_report':expense_report,'grand_total_ledger':grand_total_ledger,'grand_total_amount':grand_total_amount}
+        return render(request, 'expense_report.html', context)
+
+class LedgerCreateView(View):
+    def get(self,request):
+        return render(request, 'ledgercreate.html')
+    def post(self,request):
+        category = request.POST.get('category')
+        message = None
+        if not category:
+            message='enter name'
+        if not message:
+            g = ExpenseLedger(category=category)
+            g.save()
+            return redirect('myapp:ExpenseReportView')
+        else:
+            return render(request, 'ledgercreate.html', {'message':message})
+
+
+class DashboardView(View):
+    def get(self,request):
+        today = datetime.date.today()
+        first_date = today.replace(day=1)
+        expense_type = 'Expense'
+        exp_total = ExpenseReport.objects.filter(expense_date__range=[first_date, today],expense_type=expense_type).aggregate(Sum('amount'))['amount__sum']
+        purchase_total = PurchaseList.objects.filter(created_date__range=[first_date, today]).aggregate(Sum('purchase_price'))['purchase_price__sum']
+        c_product = Items.objects.all()
+        sale_total = Order.objects.filter(created_at__range=[first_date, today]).aggregate(Sum('all_total'))['all_total__sum']
+        context = {'c_product':c_product,'sale_total':sale_total,'purchase_total':purchase_total,'exp_total':exp_total}
+        return render(request, 'dashboard.html', context)
+    def post(self,request):
+        pass

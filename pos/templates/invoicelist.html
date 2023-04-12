@@ -12,7 +12,7 @@
 								class="table hover multiple-select-row data-table-export nowrap"
 							>
 								<thead>
-									<tr>
+									<tr class="table-warning">
 										<th class="table-plus datatable-nosort">Customer Name</th>
 										<th>Order No</th>
 										<th>Amount</th>
@@ -21,7 +21,7 @@
 								</thead>
 								<tbody>
 									{% for p in order_status %}
-									<tr>
+									<tr class="table-info">
 										<td class="table-plus">{{p.ordered_by}}</td>
 										<td><a href="#"><strong>OrderId-({{p.id}})</strong></a></td>
 										<td>{{p.all_total}}</td>
@@ -48,7 +48,7 @@
 								class="table hover multiple-select-row data-table-export nowrap"
 							>
 								<thead>
-									<tr>
+									<tr class="table-warning">
 										<th class="table-plus datatable-nosort">Customer Name</th>
 										<th>Invoice No</th>
 										<th>Amount</th>
@@ -57,7 +57,7 @@
 								</thead>
 								<tbody>
 									{% for p in saleinvoice %}
-									<tr>
+									<tr class="table-info">
 										<td class="table-plus">{{p.ordered_by}}</td>
 										<td><a href="#"><strong>{{p.id}}</strong></a></td>
 										<td>{{p.all_total}}</td>

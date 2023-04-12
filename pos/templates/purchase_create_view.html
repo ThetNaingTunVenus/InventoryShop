@@ -97,7 +97,7 @@
     <div class="pb-20">
         <table class="data-table table stripe hover nowrap">
             <thead>
-            <tr>
+            <tr class="table-warning">
                 <th>Date</th>
                 <th class="text-center">Supplier Name</th>
                 <th class="text-center">Items</th>
@@ -110,7 +110,7 @@
             </thead>
             <tbody>
             {% for p in supplier_list %}
-            <tr>
+            <tr class="talbe-info">
                 <td>{{p.p_date}}</td>
                 <td class="table-plus"><b>{{p.supplier_name}}</b></td>
                 <td>{{p.item_name}}</td>

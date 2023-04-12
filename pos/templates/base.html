@@ -10,19 +10,19 @@
 		<link
 			rel="apple-touch-icon"
 			sizes="180x180"
-			href="{% static 'vendors/images/apple-touch-icon.png' %}"
+			href="{% static 'vendors/images/padauklogo.png' %}"
 		/>
 		<link
 			rel="icon"
 			type="image/png"
 			sizes="32x32"
-			href="{% static 'vendors/images/favicon-32x32.png' %}"
+			href="{% static 'vendors/images/padauklogo.png' %}"
 		/>
 		<link
 			rel="icon"
 			type="image/png"
 			sizes="16x16"
-			href="{% static 'vendors/images/favicon-16x16.png' %}"
+			href="{% static 'vendors/images/padauklogo.png' %}"
 		/>
 
 		<!-- Mobile Specific Metas -->
@@ -163,7 +163,7 @@
 <!--						</div>-->
 <!--					</form>-->
 <!--				</div>-->
-				<div><b class="text-primary"><h4>Shop Name</h4></b></div>
+				<div><b class="text-primary"></b></div>
 			</div>
 			<div class="header-right">
 				<div class="dashboard-setting user-notification">
@@ -187,7 +187,7 @@
 							data-toggle="dropdown"
 						>
 							<span class="user-icon">
-								<img src="{% static 'vendors/images/apple-touch-icon.png' %}" alt="" />
+								<img src="{% static 'vendors/images/padauklogo.png' %}" alt="" />
 							</span>
 							<span class="user-name"></span>
 						</a>
@@ -381,9 +381,9 @@
 		<div class="left-side-bar">
 			<div class="brand-logo">
 				<a href="#">
-					<img src="{% static 'vendors/images/deskapp-logo.svg' %}" alt="" class="dark-logo" />
+					<img src="{% static 'vendors/images/headnav.svg' %}" alt="" class="dark-logo" />
 					<img
-						src="{% static 'vendors/images/deskapp-logo-white.svg' %}"
+						src="{% static 'vendors/images/headnav.svg' %}"
 						alt=""
 						class="light-logo"
 					/>
@@ -396,27 +396,46 @@
 				<div class="sidebar-menu">
 					<ul id="accordion-menu">
 						<li>
+							<a href="{% url 'myapp:DashboardView' %}" class="dropdown-toggle no-arrow">
+								<span class="micon dw dw-analytics-15"></span
+								><span class="mtext">Dashboard</span>
+							</a>
+						</li>
+						<li>
 							<a href="/" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-house"></span
 								><span class="mtext">Home</span>
 							</a>
 						</li>
+						<li>
+							<a href="{% url 'myapp:MyCartView' %}" class="dropdown-toggle no-arrow">
+								<span class="micon bi bi-cart4"></span
+								><span class="mtext">Shopping Cart</span>
+							</a>
+						</li>
 
 						<li>
 							<a href="{% url 'myapp:PurchaseData' %}" class="dropdown-toggle no-arrow">
-								<span class="micon bi bi-truck"></span
+								<span class="micon dw dw-factory"></span
 								><span class="mtext">Purchase</span>
 							</a>
 						</li>
+						<li>
+							<a href="{% url 'myapp:DamageItemView' %}" class="dropdown-toggle no-arrow">
+								<span class="micon bi bi-recycle"></span
+								><span class="mtext">Return Item</span>
+							</a>
+						</li>
+
 						<li class="dropdown">
 							<a href="javascript:;" class="dropdown-toggle">
 								<span class="micon bi bi-graph-up-arrow"></span
 								><span class="mtext">Reports</span>
 							</a>
 							<ul class="submenu">
-								<li><a href="{% url 'myapp:SaleInvoiceView' %}">Cash Sale</a></li>
+<!--								<li><a href="{% url 'myapp:SaleInvoiceView' %}">Cash Sale</a></li>-->
 								<li><a href="{% url 'myapp:SaleInvoiceReportFilter' %}">Sale Report</a></li>
-<!--								<li><a href="#">Dashboard style 3</a></li>-->
+								<li><a href="{% url 'myapp:DamageReportView' %}">Return Item Report</a></li>
 							</ul>
 						</li>
 						<li class="dropdown">
@@ -428,8 +447,16 @@
 								<li><a href="{% url 'myapp:CategoryCreate' %}">Category</a></li>
 								<li><a href="{% url 'myapp:ProductCreate' %}">Product</a></li>
 								<li><a href="{% url 'myapp:SupplierCreate' %}">Supplier</a></li>
+<!--								<li><a href="#">Expense Ledger</a></li>-->
 							</ul>
 						</li>
+						<li>
+							<a href="{% url 'myapp:ExpenseReportView' %}" class="dropdown-toggle no-arrow">
+								<span class="micon dw dw-analytics-19"></span
+								><span class="mtext">Genernal Expense</span>
+							</a>
+						</li>
+
 
 <!--						<li>-->
 <!--							<a href="{% url 'myapp:SupplierCreate' %}" class="dropdown-toggle no-arrow">-->
@@ -450,12 +477,10 @@
 								><span class="mtext">Documentation</span>
 							</a>
 							<ul class="submenu">
-								<li><a href="introduction.html">Introduction</a></li>
-								<li><a href="getting-started.html">Getting Started</a></li>
-								<li><a href="color-settings.html">Color Settings</a></li>
-								<li>
-									<a href="third-party-plugins.html">Third Party Plugins</a>
-								</li>
+								<li><a href="#">soon</a></li>
+<!--								<li><a href="#">soon</a></li>-->
+<!--								<li><a href="color-settings.html">Color Settings</a></li>-->
+<!--								<li><a href="third-party-plugins.html">Third Party Plugins</a></li>-->
 							</ul>
 						</li>
 
@@ -505,6 +530,14 @@
 		<!-- Datatable Setting js -->
 		<script src="{% static 'vendors/scripts/datatable-setting.js' %}"></script>
 		<!-- Google Tag Manager (noscript) -->
+<!--		<script src="{% static 'src/plugins/apexcharts/apexcharts.min.js' %}"></script>-->
+<!--		<script src="{% static 'vendors/scripts/apexcharts-setting.js' %}"></script>-->
+<!--<script src="{% static 'vendors/scripts/goog.js' %}"></script>-->
+
+		<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+
 		<noscript
 			><iframe
 				src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS"

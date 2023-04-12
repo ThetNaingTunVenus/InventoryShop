@@ -10,7 +10,13 @@ class CartAdmin(admin.ModelAdmin):
 admin.site.register(Cart,CartAdmin)
 
 class CartProductAdmin(admin.ModelAdmin):
-    list_display = ('cart','product','rate','quantity','subtotal','remain_balance')
+    list_display = ('id','cart','product','rate','quantity','subtotal','remain_balance')
 admin.site.register(CartProduct,CartProductAdmin)
+
 admin.site.register(Category)
 admin.site.register(Order)
+admin.site.register(ExpenseLedger)
+admin.site.register(ExpenseReport)
+admin.site.register(DamageItems)
+admin.site.register(PurchaseList)
+admin.site.register(Supplier)

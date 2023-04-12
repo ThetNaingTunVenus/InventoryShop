@@ -40,7 +40,7 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "Cart : "+ str(self.id)
+        return str(self.id)
 
 class CartProduct(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
@@ -69,7 +69,7 @@ class Order(models.Model):
     total = models.PositiveIntegerField()
     tax = models.PositiveIntegerField()
     all_total = models.PositiveIntegerField()
-    ordered_staus = models.CharField(max_length=255, choices=STATUS, default='Ordering')
+    ordered_staus = models.CharField(max_length=255, choices=STATUS, default='Cash')
     created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -87,3 +87,29 @@ class PurchaseList(models.Model):
 
     def __str__(self):
         return self.item_name
+
+class DamageItems(models.Model):
+    item_name = models.CharField(max_length=225)
+    category = models.CharField(max_length=225,blank=True,null=True)
+    item_code = models.CharField(max_length=225,blank=True,null=True)
+    quantity = models.IntegerField(default=0)
+    description = models.CharField(max_length=225,blank=True,null=True)
+    return_date = models.DateField()
+    created_at = models.DateField(auto_now_add=True)
+
+class ExpenseLedger(models.Model):
+    category = models.CharField(max_length=225,unique=True)
+    balance = models.IntegerField(default=0)
+
+class ExpenseReport(models.Model):
+    expense_type = models.CharField(max_length=225)
+    title = models.CharField(max_length=225)
+    category = models.CharField(max_length=225)
+    amount = models.IntegerField(default=0)
+    expense_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+
+
