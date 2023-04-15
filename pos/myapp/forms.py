@@ -10,12 +10,14 @@ class ULoginForm(forms.Form):
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['ordered_by', 'mobile', 'shipping_address']
+        fields = ['ordered_by', 'mobile', 'shipping_address','delivery_fee']
         widgets = {
             'ordered_by': forms.TextInput(attrs={'class': 'form-control'}),
             'mobile': forms.TextInput(attrs={'class': 'form-control'}),
-            'shipping_address': forms.TextInput(attrs={'class': 'form-control'}),
+            'shipping_address': forms.Textarea(attrs={'class': 'form-control'}),
+            'delivery_fee': forms.NumberInput(attrs={'class':'form-control col-md-4'}),
             # 'ordered_staus': forms.Select(attrs={'class': 'form-control col-md-4'}),
+            # 'id':forms.Textarea
 
         }
 

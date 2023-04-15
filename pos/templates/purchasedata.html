@@ -101,26 +101,26 @@
                 class="table hover multiple-select-row data-table-export nowrap"
         >
             <thead>
-            <tr class="table-warning">
+            <tr class="table-info">
                 <th>Date</th>
                 <th class="text-center">Supplier Name</th>
                 <th class="text-center">Items</th>
                 <th class="text-center">Qty</th>
                 <th>Purchase Price</th>
-                <th>Sale Price</th>
+                <th>Total</th>
 
 
             </tr>
             </thead>
             <tbody>
             {% for p in purchasedata %}
-            <tr class="table-info">
+            <tr class="">
                 <td>{{p.p_date}}</td>
                 <td class="table-plus"><b>{{p.supplier_name}}</b></td>
                 <td>{{p.item_name}}</td>
                 <td>{{p.purchase_qty}}</td>
                 <td>{{p.purchase_price}}</td>
-                <td>{{p.sale_price}}</td>
+                <td>{{p.total_purchase_price}}</td>
 
             </tr>
             {% endfor %}

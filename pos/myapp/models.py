@@ -49,6 +49,7 @@ class CartProduct(models.Model):
     quantity = models.PositiveIntegerField()
     subtotal = models.PositiveIntegerField()
     remain_balance = models.IntegerField()
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return "Cart : "+ str(self.cart.id)+ "CartProduct : " + str(self.id)
@@ -61,14 +62,16 @@ STATUS=(
 class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=255,null=True, blank=True)
-    shipping_address = models.CharField(max_length=255, default='local')
+    shipping_address = models.CharField(max_length=255, null=True, blank=True)
     mobile = models.CharField(max_length=255,null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     subtotal = models.PositiveIntegerField()
     discount = models.PositiveIntegerField()
     total = models.PositiveIntegerField()
     tax = models.PositiveIntegerField()
+    delivery_fee = models.IntegerField(default=0)
     all_total = models.PositiveIntegerField()
+    all_total_delivery = models.IntegerField(default=0)
     ordered_staus = models.CharField(max_length=255, choices=STATUS, default='Cash')
     created_at = models.DateField(auto_now_add=True)
 
@@ -82,6 +85,7 @@ class PurchaseList(models.Model):
     purchase_qty = models.IntegerField(default=0)
     purchase_price = models.IntegerField(default=0)
     sale_price = models.IntegerField(default=0)
+    total_purchase_price = models.IntegerField(default=0)
     p_date = models.DateField()
     created_date = models.DateField(auto_now_add=True)
 

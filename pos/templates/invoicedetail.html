@@ -3,91 +3,67 @@
 
 {% block content %}
 
-<main>
-    <div class="container-fluid">
-        <div class="card mb-1">
-            <div class="card-header">
-                <h6>Customer Detail</h6>
-            </div>
-            <div class="card-body">
-
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Phone Number</th>
-                        <th>Address</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>{{ord_obj.ordered_by}}</td>
-                        <td>{{ord_obj.mobile}}</td>
-                        <td>{{ord_obj.shipping_address}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <strong class="text-primary">{{ord_obj.created_at}}:{{ord_obj.id}}</strong>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                        <tr class="table-warning">
-                            <th>SN</th>
-                            <th>Item Name</th>
-                            <th>Rate</th>
-                            <th>Quantity</th>
-                            <th>Subtotal</th>
+<div class="row col-md-12">
+    <div class="col-md-6"><h5>name:{{ord_obj.ordered_by}}</h5></div>
+    <div class="text-right col-md-6"><h5>{{ord_obj.id}}</h5></div>
+</div>
+<hr>
+<div class="row col-md-12">
+    <div class="col-md-6"><h5>phone:{{ord_obj.mobile}}</h5></div>
+    <div class="text-right col-md-6"><h5>{{ord_obj.created_at}}</h5></div>
+</div>
+<hr>
+<div class="table-responsive">
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th scope="col">#</th>
+            <th>Item</th>
+            <th class="text-right">Qty</th>
+            <th class="text-right">Amount</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+      {% for p in ord_obj.cart.cartproduct_set.all %}
+	    <tr>
+	      <th scope="row">{{forloop.counter}}</th>
+            <th>{{p.product.item_name}}</th>
+            <th class="text-right">{{p.quantity}}</th>
+            <th class="text-right">{{p.subtotal}}</th>
+	    </tr>
+      {% endfor %}
+                       <tr>
+                            <th colspan="3" class="text-right">Amount :</th>
+                            <th class="text-right">{{ord_obj.total}}</th>
+                       </tr>
+                       <tr>
+                            <th colspan="3" class="text-right">Delivery Fee :</th>
+                            <th class="text-right">{{ord_obj.delivery_fee}}</th>
+                       </tr>
+                       <tr>
+                            <th colspan="3" class="text-right">Total Amount :</th>
+                            <th class="text-right">{{ord_obj.all_total_delivery}}</th>
                         </tr>
-                        </thead>
-                        <tfoot>
-                        <tr>
+      <tr>
+          <th colspan="4">
+              <span><strong>Address :</strong></span>
+          </th>
+      </tr>
+	  </tbody>
+	</table>
+</div>
 
-                        </tr>
-                        </tfoot>
-                        <tbody>
-
-                        {% for p in ord_obj.cart.cartproduct_set.all %}
-                        <tr class="table-info">
-                            <td>{{forloop.counter}}</td>
-                            <td><a href="#">{{p.product.item_name}}</a></td>
-                            <td>{{p.rate}}</td>
-                            <td>{{p.quantity}}</td>
-                            <td>{{p.subtotal}}</td>
-                        </tr>
-                        {% endfor %}
-
-                        <tr>
-                            <td colspan="4" class="text-right">Amount :</td>
-                            <td>{{ord_obj.total}}</td>
-
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="text-right">Tax :</td>
-                            <td>{{ord_obj.tax}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="text-right">Total :</td>
-                            <td>{{ord_obj.all_total}}</td>
-                        </tr>
+<div class="col-md-12">
+									<div class="text-left">
+										<p class="font-30 mb-5">{{ord_obj.shipping_address}}</p>
+									</div>
+								</div>
+<hr>
+<div>
+    <h4>အားပေးမှုအတွက် အထူး ကျေးဇူးတင်ပါသည်......</h4>
+</div>
 
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-</main>
 
 
 {% endblock content %}

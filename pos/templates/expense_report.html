@@ -15,49 +15,49 @@
 <!--=======================-->
 
 <!--=============================================================-->
-<div class="card-box mb-30">
-    <div class="pd-20">
-        <a href="{% url 'myapp:LedgerCreateView' %}" class="btn btn-sm btn-info"><span class="icon-copy bi bi-plus-circle-fill"></span> - Create Ledger</a>
-<!--        <h4 class="text-blue h4"><i class="icon-copy bi bi-plus-circle-fill"></i>-Create Ledger Category</h4>-->
+<!--<div class="card-box mb-30">-->
+<!--    <div class="pd-20">-->
+<!--        <a href="{% url 'myapp:LedgerCreateView' %}" class="btn btn-sm btn-info"><span class="icon-copy bi bi-plus-circle-fill"></span> - Create Ledger</a>-->
+<!--&lt;!&ndash;        <h4 class="text-blue h4"><i class="icon-copy bi bi-plus-circle-fill"></i>-Create Ledger Category</h4>&ndash;&gt;-->
 
-    </div>
-    <div class="pb-20">
-        <table class="data-table table stripe hover nowrap">
-            <thead>
-            <tr class="table-warning">
-                <th>ID</th>
-                <th class="text-center">Expense Ledger Name</th>
-                <th class="text-center">Expense Balance</th>
-                <th class="text-center">Action</th>
-
-
+<!--    </div>-->
+<!--    <div class="pb-20">-->
+<!--        <table class="data-table table stripe hover nowrap">-->
+<!--            <thead>-->
+<!--            <tr class="table-warning">-->
+<!--                <th>ID</th>-->
+<!--                <th class="text-center">Expense Ledger Name</th>-->
+<!--                <th class="text-center">Expense Balance</th>-->
+<!--                <th class="text-center">Action</th>-->
 
 
-            </tr>
-            </thead>
-            <tbody>
-            {% for p in expense_ledger %}
-            <tr class="table-info">
-                <td class="table-plus"><b>{{p.id}}</b></td>
-                 <td><b>{{p.category}}</b></td>
-                <td><b>{{p.balance}}</b></td>
-                <td><a href="{% url 'myapp:ExpenseLedgerView' p.id%}" class="btn btn-sm btn-primary"><i class="icon-copy dw dw-pencil"></i></a></td>
 
-            </tr>
-            {% endfor %}
 
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td class="">Grand Total</td>
-                <td class="">{{grand_total_ledger}}</td>
-                <td></td>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
-</div>
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            {% for p in expense_ledger %}-->
+<!--            <tr class="table-info">-->
+<!--                <td class="table-plus"><b>{{p.id}}</b></td>-->
+<!--                 <td><b>{{p.category}}</b></td>-->
+<!--                <td><b>{{p.balance}}</b></td>-->
+<!--                <td><a href="{% url 'myapp:ExpenseLedgerView' p.id%}" class="btn btn-sm btn-primary"><i class="icon-copy dw dw-pencil"></i></a></td>-->
+
+<!--            </tr>-->
+<!--            {% endfor %}-->
+
+<!--            </tbody>-->
+<!--            <tfoot>-->
+<!--            <tr>-->
+<!--                <td></td>-->
+<!--                <td class="">Grand Total</td>-->
+<!--                <td class="">{{grand_total_ledger}}</td>-->
+<!--                <td></td>-->
+<!--            </tr>-->
+<!--            </tfoot>-->
+<!--        </table>-->
+<!--    </div>-->
+<!--</div>-->
 <!--##############################################-->
 
 

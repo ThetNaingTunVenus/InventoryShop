@@ -4,7 +4,7 @@ from . import views
 app_name = 'myapp'
 urlpatterns = [
     path('test',views.test, name='test'),
-    path('', HomeView.as_view(), name='HomeView'),
+    path('HomeView', HomeView.as_view(), name='HomeView'),
     path('ProductCreate', ProductCreate.as_view(), name='ProductCreate'),
     path('ProductEditView/<int:pk>/', ProductEditView.as_view(), name='ProductEditView'),
     path('CategoryCreate',CategoryCreate.as_view(), name='CategoryCreate'),
@@ -26,6 +26,8 @@ urlpatterns = [
     path('SaleInvoiceReportFilter/', SaleInvoiceReportFilter.as_view(), name='SaleInvoiceReportFilter'),
     path('InvoiceDetailView/<int:pk>/', InvoiceDetailView.as_view(), name='InvoiceDetailView'),
     path('InvoiceStatusChange/<int:pk>/', InvoiceStatusChange.as_view(), name='InvoiceStatusChange'),
+    path('SaleItemReportView', SaleItemReportView.as_view(), name='SaleItemReportView'),
+    path('GPView', GPView.as_view(), name='GPView'),
 
     path('DamageItemView/', DamageItemView.as_view(), name='DamageItemView'),
     path('DamageInvoiceView/<int:id>/', DamageInvoiceView.as_view(), name='DamageInvoiceView'),
@@ -38,7 +40,7 @@ urlpatterns = [
     path('ExpenseReportFilter/', ExpenseReportFilter.as_view(), name='ExpenseReportFilter'),
     path('LedgerCreateView/', LedgerCreateView.as_view(), name='LedgerCreateView'),
 
-    path('DashboardView/', DashboardView.as_view(), name='DashboardView'),
+    path('', DashboardView.as_view(), name='DashboardView'),
 
 
 ]

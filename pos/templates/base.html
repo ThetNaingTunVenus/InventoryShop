@@ -198,7 +198,7 @@
 								><i class="dw dw-user1"></i> {{request.user}}</a
 							>
 
-							<a class="dropdown-item" href="logout/"
+							<a class="dropdown-item" href="{% url 'myapp:UserLogoutView' %}"
 								><i class="dw dw-logout"></i> Log Out</a
 							>
 						</div>
@@ -381,9 +381,9 @@
 		<div class="left-side-bar">
 			<div class="brand-logo">
 				<a href="#">
-					<img src="{% static 'vendors/images/headnav.svg' %}" alt="" class="dark-logo" />
+					<img src="{% static 'vendors/images/padlogo.svg' %}" alt="" class="dark-logo" />
 					<img
-						src="{% static 'vendors/images/headnav.svg' %}"
+						src="{% static 'vendors/images/padlogo.svg' %}"
 						alt=""
 						class="light-logo"
 					/>
@@ -401,12 +401,12 @@
 								><span class="mtext">Dashboard</span>
 							</a>
 						</li>
-						<li>
-							<a href="/" class="dropdown-toggle no-arrow">
-								<span class="micon bi bi-house"></span
-								><span class="mtext">Home</span>
-							</a>
-						</li>
+<!--						<li>-->
+<!--							<a href="/" class="dropdown-toggle no-arrow">-->
+<!--								<span class="micon bi bi-house"></span-->
+<!--								><span class="mtext">Home</span>-->
+<!--							</a>-->
+<!--						</li>-->
 						<li>
 							<a href="{% url 'myapp:MyCartView' %}" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-cart4"></span
@@ -423,7 +423,7 @@
 						<li>
 							<a href="{% url 'myapp:DamageItemView' %}" class="dropdown-toggle no-arrow">
 								<span class="micon bi bi-recycle"></span
-								><span class="mtext">Return Item</span>
+								><span class="mtext">Return</span>
 							</a>
 						</li>
 
@@ -435,7 +435,9 @@
 							<ul class="submenu">
 <!--								<li><a href="{% url 'myapp:SaleInvoiceView' %}">Cash Sale</a></li>-->
 								<li><a href="{% url 'myapp:SaleInvoiceReportFilter' %}">Sale Report</a></li>
-								<li><a href="{% url 'myapp:DamageReportView' %}">Return Item Report</a></li>
+								<li><a href="{% url 'myapp:SaleItemReportView' %}">Items Report</a></li>
+								<li><a href="{% url 'myapp:DamageReportView' %}">Return Item</a></li>
+								<li><a href="{% url 'myapp:GPView' %}">GP</a></li>
 							</ul>
 						</li>
 						<li class="dropdown">
@@ -447,7 +449,7 @@
 								<li><a href="{% url 'myapp:CategoryCreate' %}">Category</a></li>
 								<li><a href="{% url 'myapp:ProductCreate' %}">Product</a></li>
 								<li><a href="{% url 'myapp:SupplierCreate' %}">Supplier</a></li>
-<!--								<li><a href="#">Expense Ledger</a></li>-->
+								<li><a href="{% url 'myapp:LedgerCreateView' %}">Expense Category</a></li>
 							</ul>
 						</li>
 						<li>

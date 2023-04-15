@@ -28,7 +28,7 @@ class UserRequiredMixin(object):
 class UserLoginView(FormView):
     template_name = 'login.html'
     form_class = ULoginForm
-    success_url = reverse_lazy('myapp:HomeView')
+    success_url = reverse_lazy('myapp:DashboardView')
 
     def form_valid(self, form):
         username = form.cleaned_data.get('username')
@@ -61,10 +61,11 @@ class HomeView(UserRequiredMixin,TemplateView):
 
 
 class AddToCartView(UserRequiredMixin,TemplateView):
-    template_name = 'home.html'
+    template_name = 'mycartview.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
     #     # prouduct id get from request url
         product_id = self.kwargs['pro_id']
 
@@ -90,17 +91,23 @@ class AddToCartView(UserRequiredMixin,TemplateView):
                 cart_obj.super_total = cart_obj.tax + cart_obj.total
                 cart_obj.save()
                 cartproduct_balance = cartproduct.remain_balance
+                print('update')
                 item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
             # New item added in cart
             else:
                 item_filter = Items.objects.filter(id=product_id)
                 balance_filter = item_filter[0].balance_qty
-                cartproduct_balance = balance_filter-1
+                qty_balance = 1
+                cartproduct_balance = int(balance_filter) - int(qty_balance)
+                item_update = Items.objects.filter(id=product_id)
+                item_update.update(balance_qty=cartproduct_balance)
+                # print('success !!!!!!')
                 cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj,
                                                          rate=product_obj.sell_price, quantity=1,
                                                          subtotal=product_obj.sell_price,remain_balance=cartproduct_balance)
 
-                item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
+                # item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
+
 
                 cart_obj.total += product_obj.sell_price
                 cart_obj.tax = cart_obj.total * 0.00
@@ -111,16 +118,29 @@ class AddToCartView(UserRequiredMixin,TemplateView):
             self.request.session['cart_id'] = cart_obj.id
             item_filter = Items.objects.filter(id=product_id)
             balance_filter = item_filter[0].balance_qty
-            cartproduct_balance = balance_filter - 1
+            qty_balance = 1
+            cartproduct_balance = int(balance_filter) - int(qty_balance)
             cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj, rate=product_obj.sell_price,
                                                      quantity=1, subtotal=product_obj.sell_price,remain_balance=cartproduct_balance)
+
+            item_update = Items.objects.filter(id=product_id)
+            item_update.update(balance_qty=cartproduct_balance)
+
             cart_obj.total += product_obj.sell_price
             cart_obj.tax = cart_obj.total * 0.00
+            # print('succ')
             cart_obj.super_total = cart_obj.tax + cart_obj.total
             cart_obj.save()
 
     #     # if product already exist
         context['product_list'] = Items.objects.all().order_by('-id')
+        # context['cart'] = Cart.objects.get(id=cart_id)
+        cart_id = self.request.session.get('cart_id', None)
+        if cart_id:
+            cart = Cart.objects.get(id=cart_id)
+        else:
+            cart = None
+        context['cart'] = cart
         return context
 
 class MyCartView(UserRequiredMixin,TemplateView):
@@ -133,6 +153,8 @@ class MyCartView(UserRequiredMixin,TemplateView):
         else:
             cart = None
         context['cart'] = cart
+        context['product_list'] = Items.objects.all().order_by('-id')
+        context['queryset'] = Order.objects.filter(created_at=datetime.date.today()).order_by('-id')
         return context
 
 
@@ -148,6 +170,8 @@ class ManageCartView(UserRequiredMixin,View):
         if action == "inc":
             cp_obj.quantity +=1
             cp_obj.remain_balance -=1
+            item_balance = cp_obj.remain_balance
+            item_update = Items.objects.filter(id=cp_obj.product.id).update(balance_qty=item_balance)
             cp_obj.subtotal += cp_obj.rate
             cp_obj.save()
             cart_obj.total +=cp_obj.rate
@@ -187,6 +211,7 @@ class EmptyCartView(UserRequiredMixin,View):
         cart_id = request.session.get("cart_id", None)
         if cart_id:
             cart = Cart.objects.get(id=cart_id)
+
             cart.cartproduct_set.all().delete()
             cart.total =0
             cart.tax = 0
@@ -199,7 +224,7 @@ class EmptyCartView(UserRequiredMixin,View):
 class CheckoutView(UserRequiredMixin,CreateView):
     template_name = 'checkout.html'
     form_class = CheckoutForm
-    success_url = reverse_lazy('myapp:HomeView')
+    success_url = reverse_lazy('myapp:MyCartView')
 
     # def dispatch(self, request, *args, **kwargs):
     #     if request.user.is_authenticated and request.user.customer:
@@ -220,19 +245,24 @@ class CheckoutView(UserRequiredMixin,CreateView):
 
     def form_valid(self, form):
         cart_id = self.request.session.get('cart_id')
+        # print(form.instance.delivery_fee)
+        deli = form.instance.delivery_fee
         if cart_id:
             cart_obj = Cart.objects.get(id=cart_id)
             form.instance.cart = cart_obj
             form.instance.subtotal = cart_obj.total
             form.instance.discount = 0
             form.instance.total = cart_obj.total
+
             # form.instance.ordered_staus = 'Cash'
             form.instance.tax = cart_obj.tax
             form.instance.all_total = cart_obj.super_total
+            total_deli = deli + cart_obj.super_total
+            form.instance.all_total_delivery = total_deli
 
             del self.request.session['cart_id']
         else:
-            return redirect('myapp:HomeView')
+            return redirect('myapp:MyCartView')
         return super().form_valid(form)
 
 
@@ -346,6 +376,7 @@ class InvoiceDetailView(UserRequiredMixin,DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['allstatus'] = STATUS
+
         return context
 
 class InvoiceStatusChange(View):
@@ -361,6 +392,97 @@ class InvoiceStatusChange(View):
             fm.save()
         return redirect('myapp:SaleInvoiceReportFilter')
 
+
+class SaleItemReportView(View):
+    def get(self,request):
+        cart_product = CartProduct.objects.all()
+        item = Items.objects.all()
+        context = {'cart_product':cart_product,'item':item}
+        return render(request, 'sale_item_report.html', context)
+
+    def post(self,request):
+        fromdate = request.POST.get('fromdate')
+        todate = request.POST.get('todate')
+        item_name = request.POST.get('item_name')
+        message = None
+        if not fromdate:
+            message = 'please select from date'
+        elif not todate:
+            message = 'please select to date'
+        elif not item_name:
+            message = 'please item name required'
+        if not message:
+            # item_id = Items.objects.get(id=)
+            cart_product = CartProduct.objects.filter(created_at__range=[fromdate, todate],product=item_name)
+            total_qty = cart_product.aggregate(Sum('quantity'))['quantity__sum']
+            total_subtotal = cart_product.aggregate(Sum('subtotal'))['subtotal__sum']
+            item = Items.objects.all()
+            message = 'success filter'
+            context = {'cart_product': cart_product, 'item': item, 'message':message,'total_qty':total_qty,'total_subtotal':total_subtotal}
+            return render(request, 'sale_item_report.html', context)
+        else:
+            cart_product = CartProduct.objects.all()
+            item = Items.objects.all()
+            context = {'cart_product': cart_product, 'item': item, 'message':message}
+            return render(request, 'sale_item_report.html', context)
+
+class GPView(View):
+    def get(self,request):
+        cart_product = CartProduct.objects.all()
+        purchase_item = PurchaseList.objects.all()
+        item = Items.objects.all()
+        context = {
+            'item':item,
+            'cart_product':cart_product,
+            'purchase_item':purchase_item,
+        }
+        return render(request, 'gp_report.html', context)
+    def post(self,request):
+        fromdate = request.POST.get('fromdate')
+        todate = request.POST.get('todate')
+        item_name = request.POST.get('item_name')
+        message = None
+        if not fromdate:
+            message = 'please select from date'
+        elif not todate:
+            message = 'please select to date'
+        elif not item_name:
+            message = 'please item name required'
+        if not message:
+            cart_product = CartProduct.objects.filter(created_at__range=[fromdate, todate], product=item_name)
+            total_qty = cart_product.aggregate(Sum('quantity'))['quantity__sum']
+            total_subtotal = cart_product.aggregate(Sum('subtotal'))['subtotal__sum']
+
+            item_id = Items.objects.get(id=item_name)
+            purchase_item = PurchaseList.objects.filter(p_date__range=[fromdate, todate], item_name=item_id)
+            pur_qty_total = purchase_item.aggregate(Sum('purchase_qty'))['purchase_qty__sum']
+            pur_price_total = purchase_item.aggregate(Sum('total_purchase_price'))['total_purchase_price__sum']
+            gp_profit = total_subtotal - pur_price_total
+            gp_balance = pur_qty_total - total_qty
+            item = Items.objects.all()
+            context={
+                'cart_product':cart_product,
+                'total_qty':total_qty,
+                'total_subtotal':total_subtotal,
+                'purchase_item':purchase_item,
+                'pur_qty_total':pur_qty_total,
+                'pur_price_total':pur_price_total,
+                'gp_profit':gp_profit,
+                'gp_balance':gp_balance,
+                'item':item,
+            }
+            return render(request, 'gp_report.html', context)
+        else:
+            cart_product = CartProduct.objects.all()
+            purchase_item = PurchaseList.objects.all()
+            item = Items.objects.all()
+            context = {
+                'item': item,
+                'cart_product': cart_product,
+                'purchase_item': purchase_item,
+                'message':message,
+            }
+            return render(request, 'gp_report.html', context)
 
 ######## Supplier ##############
 class SupplierCreate(View):
@@ -448,13 +570,15 @@ class PurchaseData(View):
         elif not purchase_price:
             message = 'please enter purchase price'
         if not message:
+            total_purchase_price =int(purchase_qty)*int(purchase_price)
             purchase_list = PurchaseList(
                 supplier_name=suppliername,
                 item_name=item_name,
                 purchase_qty=purchase_qty,
                 purchase_price=purchase_price,
                 sale_price=sale_price,
-                p_date=p_date
+                p_date=p_date,
+                total_purchase_price=total_purchase_price
             )
             purchase_list.save()
             item_balance = Items.objects.filter(item_name=item_name)
@@ -706,7 +830,7 @@ class LedgerCreateView(View):
             return render(request, 'ledgercreate.html', {'message':message})
 
 
-class DashboardView(View):
+class DashboardView(UserRequiredMixin,View):
     def get(self,request):
         today = datetime.date.today()
         first_date = today.replace(day=1)
