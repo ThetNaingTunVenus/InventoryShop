@@ -59,6 +59,88 @@ class HomeView(UserRequiredMixin,TemplateView):
         return context
 
 
+#test for barcode
+class testbarcode(View):
+    def post(self,request):
+        product_idb = request.POST.get('pid')
+        message = None
+        if not product_idb:
+            message = 'barcode is blank'
+        if not message:
+            product_obj = Items.objects.get(barcode_id=product_idb)
+            product_id = product_obj.id
+            # print(product_id)
+            cart_id = self.request.session.get("cart_id", None)
+            if cart_id:
+                cart_obj = Cart.objects.get(id=cart_id)
+                this_product_in_cart = cart_obj.cartproduct_set.filter(product=product_obj)
+                # Product already exists in cart
+                if this_product_in_cart.exists():
+                    cartproduct = this_product_in_cart.last()
+                    cartproduct.quantity += 1
+                    cartproduct.subtotal += product_obj.sell_price
+                    cartproduct.remain_balance -= 1
+
+                    cartproduct.save()
+                    cart_obj.total += product_obj.sell_price
+                    cart_obj.tax = cart_obj.total * 0.00
+                    cart_obj.super_total = cart_obj.tax + cart_obj.total
+                    cart_obj.save()
+                    cartproduct_balance = cartproduct.remain_balance
+                    # print('update')
+                    item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
+                # New item added in cart
+                else:
+                    item_filter = Items.objects.filter(id=product_id)
+                    balance_filter = item_filter[0].balance_qty
+                    qty_balance = 1
+                    cartproduct_balance = int(balance_filter) - int(qty_balance)
+                    item_update = Items.objects.filter(id=product_id)
+                    item_update.update(balance_qty=cartproduct_balance)
+                    # print('success !!!!!!')
+                    cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj,
+                                                             rate=product_obj.sell_price, quantity=1,
+                                                             subtotal=product_obj.sell_price,
+                                                             remain_balance=cartproduct_balance)
+
+                    # item_update = Items.objects.filter(id=product_id).update(balance_qty=cartproduct_balance)
+
+                    cart_obj.total += product_obj.sell_price
+                    cart_obj.tax = cart_obj.total * 0.00
+                    cart_obj.super_total = cart_obj.tax + cart_obj.total
+                    cart_obj.save()
+            else:
+                cart_obj = Cart.objects.create(total=0)
+                self.request.session['cart_id'] = cart_obj.id
+                item_filter = Items.objects.filter(id=product_id)
+                balance_filter = item_filter[0].balance_qty
+                qty_balance = 1
+                cartproduct_balance = int(balance_filter) - int(qty_balance)
+                cartproduct = CartProduct.objects.create(cart=cart_obj, product=product_obj,
+                                                         rate=product_obj.sell_price,
+                                                         quantity=1, subtotal=product_obj.sell_price,
+                                                         remain_balance=cartproduct_balance)
+
+                item_update = Items.objects.filter(id=product_id)
+                item_update.update(balance_qty=cartproduct_balance)
+
+                cart_obj.total += product_obj.sell_price
+                cart_obj.tax = cart_obj.total * 0.00
+                # print('succ')
+                cart_obj.super_total = cart_obj.tax + cart_obj.total
+                cart_obj.save()
+            cart_id = self.request.session.get('cart_id', None)
+            if cart_id:
+                cart = Cart.objects.get(id=cart_id)
+            else:
+                cart = None
+            context = {'cart': cart, 'message': message}
+
+            return render(request, 'mycartview.html', context)
+        else:
+            return render(request, 'mycartview.html', {'message':message})
+
+
 
 class AddToCartView(UserRequiredMixin,TemplateView):
     template_name = 'mycartview.html'

@@ -6,6 +6,9 @@ class ULoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput())
     password = forms.CharField(widget=forms.PasswordInput())
 
+class GetBarCode(forms.Form):
+    id = forms.IntegerField(widget=forms.TextInput(attrs={'class':'form-control col-md-4'}))
+
 
 class CheckoutForm(forms.ModelForm):
     class Meta:
@@ -25,9 +28,10 @@ class CheckoutForm(forms.ModelForm):
 class AdminProductEditForm(forms.ModelForm):
     class Meta:
         model = Items
-        fields = ['item_name','category','pruchase_price','sell_price','balance_qty']
+        fields = ['item_name','category','pruchase_price','sell_price','balance_qty','barcode_id']
         widgets = {
             'item_name': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
+            'barcode_id': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
             'category': forms.TextInput(attrs={'class': 'form-control col-md-6'}),
             'pruchase_price': forms.NumberInput(attrs={'class': 'form-control col-md-6'}),
             'sell_price': forms.NumberInput(attrs={'class': 'form-control col-md-6'}),

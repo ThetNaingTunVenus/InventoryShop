@@ -41,6 +41,7 @@ urlpatterns = [
     path('LedgerCreateView/', LedgerCreateView.as_view(), name='LedgerCreateView'),
 
     path('', DashboardView.as_view(), name='DashboardView'),
+    path('testbarcode/', testbarcode.as_view(), name='testbarcode'),
 
 
 ]

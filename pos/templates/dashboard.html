@@ -10,7 +10,7 @@
 								<div class="widget-data">
 									<div class="weight-700 font-24 text-dark">{{purchase_total}}</div>
 									<div class="font-14 text-secondary weight-500">
-										Total Purchase
+										Total Purchase-->
 									</div>
 								</div>
 								<div class="widget-icon">
@@ -27,7 +27,7 @@
 								<div class="widget-data">
 									<div class="weight-700 font-24 text-dark">{{sale_total}}</div>
 									<div class="font-14 text-secondary weight-500">
-										Total Sale
+										Total Sale-->
 									</div>
 								</div>
 								<div class="widget-icon">
@@ -44,8 +44,8 @@
 						<div class="card-box height-100-p widget-style3">
 							<div class="d-flex flex-wrap">
 								<div class="widget-data">
-									<div class="weight-700 font-24 text-dark">${{exp_total}}</div>
-									<div class="font-14 text-secondary weight-500">Total Expense</div>
+									<div class="weight-700 font-24 text-dark">{{exp_total}}</div>
+									<div class="font-14 text-secondary weight-500">Total Expense--></div>
 								</div>
 								<div class="widget-icon">
 									<div class="icon" data-color="#09cc06">
@@ -58,44 +58,6 @@
 					</div>
 				</div>
 <!--=============================================================-->
-
-<!-- Bootstrap Select Start -->
-					<div class="pd-20 card-box mb-30">
-						<div class="clearfix">
-							<div class="pull-left">
-								<h4 class="text-blue h4">Filter Report</h4>
-
-							</div>
-						</div>
-						<form action="{% url 'myapp:DashboardView' %}" method="post">{% csrf_token %}
-							<div class="row">
-								<div class="col-md-4 col-sm-12">
-									<div class="form-group">
-										<label>From Date</label>
-                                        <input type="date" name="fromdate" class="form-control">
-									</div>
-								</div>
-                                <div class="col-md-4 col-sm-12">
-									<div class="form-group">
-										<label>To Date</label>
-                                        <input type="date" name="todate" class="form-control">
-									</div>
-								</div>
-
-							</div>
-                            <button
-										type="submit"
-										class="btn btn-sm"
-										data-bgcolor="#00b489"
-										data-color="#ffffff"
-									>
-                                <i class="icon-copy dw dw-filter-1"></i>Filter Report
-
-									</button>
-
-						</form>
-					</div>
-					<!-- Bootstrap Select End -->
 
 <!-- Export Datatable start -->
 <div class="card-box mb-30">

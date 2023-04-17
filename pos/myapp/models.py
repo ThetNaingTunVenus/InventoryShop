@@ -27,6 +27,8 @@ class Items(models.Model):
     pruchase_price = models.FloatField(default=0.00)
     sell_price = models.FloatField(default=0.00)
     balance_qty = models.IntegerField(default=0)
+    barcode_id = models.CharField(max_length=225,blank=True, null=True)
+    photo = models.ImageField(upload_to='', blank=True, null=True)
 
 
     def __str__(self):
