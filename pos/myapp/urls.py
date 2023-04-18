@@ -42,6 +42,7 @@ urlpatterns = [
 
     path('', DashboardView.as_view(), name='DashboardView'),
     path('testbarcode/', testbarcode.as_view(), name='testbarcode'),
+    path('DeliveryView', DeliveryView.as_view(), name= 'DeliveryView'),
 
 
 ]

@@ -749,28 +749,6 @@ class DamageProductView(UserRequiredMixin,View):
             message = 'please enter return qty and description'
             return render(request,'damage_invoice_view.html', {'message':message})
 
-        # cart_product = CartProduct.objects.get(id=id)
-        # sub_total = cart_product.subtotal
-        # cart_id = cart_product.cart.id
-        #
-        # update_cp_qty = int(quantity)-int(returnqty)
-        # update_sub = int(rate) * int(returnqty)
-        # update_sub_total = int(sub_total)-int(update_sub)
-        #
-        # update_table_cartproduct = CartProduct.objects.filter(id=id,product=product).update(quantity=update_cp_qty, subtotal=update_sub_total)
-        #
-        # get_cart = Cart.objects.filter(id=int(cart_id))
-        #
-        # get_total = get_cart[0].total
-        # get_tax = get_cart[0].tax
-        # get_super_total = get_cart[0].super_total
-        #
-        # cart_total_d = int(get_total)-int(rate)
-        #
-        # cart_super = int(get_super_total)-int(update_sub)
-        # cart_update = Cart.objects.filter(id=int(cart_id))
-        # print(cart_update[0].id)
-        # update(total=int(cart_total_d), super_total=int(cart_super))
 
 class DamageReportView(View):
     def get(self,request):
@@ -925,3 +903,25 @@ class DashboardView(UserRequiredMixin,View):
         return render(request, 'dashboard.html', context)
     def post(self,request):
         pass
+
+
+class DeliveryView(View):
+    def get(self,request):
+        deli = DeliverySystem.objects.all()
+        context ={'deli':deli}
+        return render(request, 'delivery_view.html', context)
+
+    def post(self,request):
+        delivery_name = request.POST.get('delivery_name')
+        message = None
+        if not delivery_name:
+            message = 'enter name'
+        if not message:
+            g = DeliverySystem(delivery_name=delivery_name)
+            g.save()
+            return redirect('myapp:DeliveryView')
+        else:
+            deli = DeliverySystem.objects.all()
+            context = {'deli': deli,'message':message}
+            return render(request, 'delivery_view.html', context)
+
