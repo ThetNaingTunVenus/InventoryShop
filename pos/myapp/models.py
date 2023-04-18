@@ -80,7 +80,7 @@ class Order(models.Model):
     mobile = models.CharField(max_length=255,null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     subtotal = models.PositiveIntegerField()
-    discount = models.PositiveIntegerField()
+    discount = models.PositiveIntegerField(default=0)
     total = models.PositiveIntegerField()
     tax = models.PositiveIntegerField()
     delivery_fee = models.IntegerField(default=0)

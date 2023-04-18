@@ -329,17 +329,18 @@ class CheckoutView(UserRequiredMixin,CreateView):
         cart_id = self.request.session.get('cart_id')
         # print(form.instance.delivery_fee)
         deli = form.instance.delivery_fee
+        dis = form.instance.discount
         if cart_id:
             cart_obj = Cart.objects.get(id=cart_id)
             form.instance.cart = cart_obj
             form.instance.subtotal = cart_obj.total
-            form.instance.discount = 0
+            # form.instance.discount = 0
             form.instance.total = cart_obj.total
 
             # form.instance.ordered_staus = 'Cash'
             form.instance.tax = cart_obj.tax
             form.instance.all_total = cart_obj.super_total
-            total_deli = deli + cart_obj.super_total
+            total_deli = deli + cart_obj.super_total - dis
             form.instance.all_total_delivery = total_deli
 
             del self.request.session['cart_id']
