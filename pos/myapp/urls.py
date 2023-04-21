@@ -28,6 +28,8 @@ urlpatterns = [
     path('InvoiceStatusChange/<int:pk>/', InvoiceStatusChange.as_view(), name='InvoiceStatusChange'),
     path('SaleItemReportView', SaleItemReportView.as_view(), name='SaleItemReportView'),
     path('GPView', GPView.as_view(), name='GPView'),
+    path('Deliverpayment/<int:pk>', Deliverpayment.as_view(), name='Deliverpayment'),
+    path('DeliveryPaymentReportView/', DeliveryPaymentReportView, name='DeliveryPaymentReportView'),
 
     path('DamageItemView/', DamageItemView.as_view(), name='DamageItemView'),
     path('DamageInvoiceView/<int:id>/', DamageInvoiceView.as_view(), name='DamageInvoiceView'),

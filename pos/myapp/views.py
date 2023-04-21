@@ -2,7 +2,7 @@ import datetime
 
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import Sum
+from django.db.models import Sum,Count
 from django.http import HttpResponse
 from django.views.generic import TemplateView, View, CreateView, DetailView,FormView
 from django.urls import reverse_lazy
@@ -15,6 +15,7 @@ from .models import *
 # Create your views here.
 def test(request):
     return render(request, 'test_inv.html')
+
 # ===================================================User Log In ===============================
 class UserRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
@@ -428,8 +429,9 @@ class SaleInvoiceView(UserRequiredMixin,View):
 class SaleInvoiceReportFilter(View):
     def get(self,request):
         queryset = Order.objects.all()
+        deli = DeliverySystem.objects.all()
         sum = queryset.aggregate(Sum('all_total'))['all_total__sum']
-        context={'queryset':queryset,'sum':sum}
+        context={'queryset':queryset,'sum':sum,'deli':deli}
         return render(request, 'salereportfilter.html', context)
     def post(self,request):
         fromdate = request.POST.get('fromdate')
@@ -449,6 +451,29 @@ class SaleInvoiceReportFilter(View):
             message = 'Select From Date and To Date to filter Sale Reports...'
             context = {'message': message}
             return render(request, 'salereportfilter.html', context)
+
+
+def DeliveryPaymentReportView(request):
+    deli_com = DeliverySystem.objects.all()
+    deli = request.GET.get('deli')
+    if deli == None:
+        queryset = Order.objects.all()
+        # queryset = Order.objects.filter(delivery_system is None)
+        context = {'deli_com': deli_com, 'queryset': queryset}
+        return render(request, 'delivered_report.html', context)
+    else:
+        queryset = Order.objects.filter(delivery_system__delivery_name=deli,deli_payment=False)
+        # queryset = Order.objects.filter(delivery_system__delivery_name=deli)
+        context = {'deli_com': deli_com, 'queryset': queryset}
+        return render(request, 'delivered_report.html', context)
+
+class Deliverpayment(View):
+    def get(self,request,pk):
+        status = Order.objects.get(id=pk)
+        status.deli_payment = True
+        # print(status.deli_payment)
+        status.save()
+        return redirect('myapp:DeliveryPaymentReportView')
 
 
 class InvoiceDetailView(UserRequiredMixin,DetailView):
@@ -898,9 +923,18 @@ class DashboardView(UserRequiredMixin,View):
         expense_type = 'Expense'
         exp_total = ExpenseReport.objects.filter(expense_date__range=[first_date, today],expense_type=expense_type).aggregate(Sum('amount'))['amount__sum']
         purchase_total = PurchaseList.objects.filter(created_date__range=[first_date, today]).aggregate(Sum('purchase_price'))['purchase_price__sum']
-        c_product = Items.objects.all()
+        # c_product = Items.objects.all()
+# chart data
+        c_product = CartProduct.objects.values('product__item_name','product__balance_qty').annotate(sum=Sum('subtotal')).filter(created_at__range=[first_date, today])
+        # print(c_product)
+
+        # s_total = Order.objects.values('created_at__month').annotate(sum=Sum('subtotal'))
+
+
         sale_total = Order.objects.filter(created_at__range=[first_date, today]).aggregate(Sum('all_total'))['all_total__sum']
+
         context = {'c_product':c_product,'sale_total':sale_total,'purchase_total':purchase_total,'exp_total':exp_total}
+
         return render(request, 'dashboard.html', context)
     def post(self,request):
         pass
@@ -925,4 +959,6 @@ class DeliveryView(View):
             deli = DeliverySystem.objects.all()
             context = {'deli': deli,'message':message}
             return render(request, 'delivery_view.html', context)
+
+
 

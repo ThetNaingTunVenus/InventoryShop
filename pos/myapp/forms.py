@@ -13,7 +13,7 @@ class GetBarCode(forms.Form):
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['ordered_by', 'mobile', 'shipping_address','discount','delivery_fee','delivery_system','payment']
+        fields = ['ordered_by', 'mobile', 'shipping_address','discount','delivery_fee','delivery_system','payment','deli_payment',]
         widgets = {
             'ordered_by': forms.TextInput(attrs={'class': 'form-control'}),
             'mobile': forms.TextInput(attrs={'class': 'form-control'}),
@@ -22,6 +22,7 @@ class CheckoutForm(forms.ModelForm):
             'discount': forms.NumberInput(attrs={'class': 'form-control col-md-4'}),
             'payment': forms.Select(attrs={'class': 'form-control col-md-6'}),
             'delivery_system': forms.Select(attrs={'class': 'form-control col-md-6'}),
+            # 'deli_payment':forms.BooleanField(),
 
             # 'id':forms.Textarea
 
@@ -65,5 +66,5 @@ class DamageProductForm(forms.ModelForm):
 class StatusChangeForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['ordered_staus']
-        widgets = {'ordered_staus':forms.Select(attrs={'class':'form-control col-md-4'})}
+        fields = ['deli_payment']
+        # widgets = {'ordered_staus':forms.Select(attrs={'class':'form-control col-md-4'})}

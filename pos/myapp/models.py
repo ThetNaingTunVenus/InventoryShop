@@ -89,6 +89,7 @@ class Order(models.Model):
     all_total_delivery = models.IntegerField(default=0)
     ordered_staus = models.CharField(max_length=255, choices=STATUS, default='Cash')
     payment = models.CharField(max_length=225, choices=PAYMENT_TYPE, default='Cash')
+    deli_payment = models.BooleanField(default=False)
     created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
