@@ -111,7 +111,7 @@ class testbarcode(View):
                     cart_obj.super_total = cart_obj.tax + cart_obj.total
                     cart_obj.save()
             else:
-                cart_obj = Cart.objects.create(total=0)
+                cart_obj = Cart.objects.create(total=0, staff=request.user)
                 self.request.session['cart_id'] = cart_obj.id
                 item_filter = Items.objects.filter(id=product_id)
                 balance_filter = item_filter[0].balance_qty
@@ -197,7 +197,7 @@ class AddToCartView(UserRequiredMixin,TemplateView):
                 cart_obj.super_total = cart_obj.tax + cart_obj.total
                 cart_obj.save()
         else:
-            cart_obj = Cart.objects.create(total=0)
+            cart_obj = Cart.objects.create(total=0, staff=self.request.user)
             self.request.session['cart_id'] = cart_obj.id
             item_filter = Items.objects.filter(id=product_id)
             balance_filter = item_filter[0].balance_qty
@@ -923,17 +923,19 @@ class DashboardView(UserRequiredMixin,View):
         expense_type = 'Expense'
         exp_total = ExpenseReport.objects.filter(expense_date__range=[first_date, today],expense_type=expense_type).aggregate(Sum('amount'))['amount__sum']
         purchase_total = PurchaseList.objects.filter(created_date__range=[first_date, today]).aggregate(Sum('purchase_price'))['purchase_price__sum']
-        # c_product = Items.objects.all()
+
+        # product_sale_list = Order.objects.all()
 # chart data
-        c_product = CartProduct.objects.values('product__item_name','product__balance_qty').annotate(sum=Sum('subtotal')).filter(created_at__range=[first_date, today])
-        # print(c_product)
-
-        # s_total = Order.objects.values('created_at__month').annotate(sum=Sum('subtotal'))
-
+        c_product = CartProduct.objects.values('product__item_name','product__balance_qty').annotate(sum=Sum('subtotal'),quantity=Sum('quantity')).filter(created_at__range=[first_date, today])
 
         sale_total = Order.objects.filter(created_at__range=[first_date, today]).aggregate(Sum('all_total'))['all_total__sum']
 
-        context = {'c_product':c_product,'sale_total':sale_total,'purchase_total':purchase_total,'exp_total':exp_total}
+        context = {'c_product':c_product,
+                   'sale_total':sale_total,
+                   'purchase_total':purchase_total,
+                   'exp_total':exp_total,
+                   # 'product_sale_list':product_sale_list,
+                   }
 
         return render(request, 'dashboard.html', context)
     def post(self,request):

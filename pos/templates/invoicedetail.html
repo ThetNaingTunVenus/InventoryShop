@@ -60,10 +60,11 @@
     </table>
 </div>
 <hr>
+{% if ord_obj.shipping_address %}
 <span><strong><h2>ပို့ဆောင်ရန် လိပ်စာ</h2></strong></span>
 <hr>
 <span class="" style="font-size:60px;line-height: 2.0;">{{ord_obj.shipping_address}}</span>
-
+{% endif %}
 <hr>
 <br>
 <div class="text-center">
