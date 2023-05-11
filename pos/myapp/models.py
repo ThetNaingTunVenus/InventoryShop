@@ -102,6 +102,7 @@ class PurchaseList(models.Model):
     purchase_qty = models.IntegerField(default=0)
     purchase_price = models.IntegerField(default=0)
     sale_price = models.IntegerField(default=0)
+    logistic = models.IntegerField(default=0)
     total_purchase_price = models.IntegerField(default=0)
     p_date = models.DateField()
     created_date = models.DateField(auto_now_add=True)

@@ -2,15 +2,19 @@ import datetime
 
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import Sum,Count
+from django.db.models import Sum,Count,F
 from django.http import HttpResponse
 from django.views.generic import TemplateView, View, CreateView, DetailView,FormView
 from django.urls import reverse_lazy
 
+from django.core.paginator import Paginator
+
 from .forms import *
 from .models import *
 
-
+#html2pdf
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 # Create your views here.
 def test(request):
@@ -376,11 +380,12 @@ class ProductCreate(View):
         category = request.POST.get('category')
         purchase_price = request.POST.get('purchase_price')
         sale_price = request.POST.get('sale_price')
+        barcode_id = request.POST.get('barcode_id')
         message = None
         if not item_name:
             message = 'please enter item'
         if not message:
-            item = Items(item_name=item_name,category=category,pruchase_price=purchase_price,sell_price=sale_price)
+            item = Items(item_name=item_name,category=category,pruchase_price=purchase_price,sell_price=sale_price,barcode_id=barcode_id)
             item.save()
             return redirect(request.META['HTTP_REFERER'])
         else:
@@ -486,6 +491,24 @@ class InvoiceDetailView(UserRequiredMixin,DetailView):
         context['allstatus'] = STATUS
 
         return context
+
+# ================= xhtml2pdf ===============
+def pdf_invoice_create(request,id):
+    ord_obj = Order.objects.get(id=id)
+    template_path = 'pdf_invoice.html'
+    context = {'ord_obj':ord_obj}
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="invoice.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+
+    pisa_status = pisa.CreatePDF(
+        html,dest=response,
+    )
+    if pisa_status.err:
+        return HttpResponse('have a error pdf')
+    return response
+    
 
 class InvoiceStatusChange(View):
     def get(self, request, pk):
@@ -659,7 +682,15 @@ class PurchaseData(View):
         purchasedata = PurchaseList.objects.all()
         sum_purchase_qty = purchasedata.aggregate(Sum('purchase_qty'))['purchase_qty__sum']
         sum_purchase_price = purchasedata.aggregate(Sum('purchase_price'))['purchase_price__sum']
-        context = {'supplier': supplier,'purchasedata':purchasedata,'sum_purchase_qty':sum_purchase_qty,'sum_purchase_price':sum_purchase_price}
+        sum_purchase_total = purchasedata.aggregate(Sum('total_purchase_price'))['total_purchase_price__sum']
+        sum_logistic = purchasedata.aggregate(Sum('logistic'))['logistic__sum']
+        context = {'supplier': supplier,
+                   'purchasedata':purchasedata,
+                   'sum_purchase_qty':sum_purchase_qty,
+                   'sum_purchase_price':sum_purchase_price,
+                   'sum_logistic':sum_logistic,
+                   'sum_purchase_total':sum_purchase_total,
+                   }
         return render(request, 'purchasedata.html',context)
     def post(self,request):
         suppliername = request.POST.get('suppliername')
@@ -668,6 +699,7 @@ class PurchaseData(View):
         purchase_qty = request.POST.get('purchase_qty')
         purchase_price = request.POST.get('purchase_price')
         sale_price = request.POST.get('sale_price')
+        logistic = request.POST.get('logistic')
         message = None
         if not p_date:
             message = 'please select Date'
@@ -679,14 +711,16 @@ class PurchaseData(View):
             message = 'please enter purchase price'
         if not message:
             total_purchase_price =int(purchase_qty)*int(purchase_price)
+            purchase_logistic = int(total_purchase_price)+int(logistic)
             purchase_list = PurchaseList(
                 supplier_name=suppliername,
                 item_name=item_name,
                 purchase_qty=purchase_qty,
                 purchase_price=purchase_price,
                 sale_price=sale_price,
+                logistic=logistic,
                 p_date=p_date,
-                total_purchase_price=total_purchase_price
+                total_purchase_price=purchase_logistic
             )
             purchase_list.save()
             item_balance = Items.objects.filter(item_name=item_name)
@@ -713,8 +747,15 @@ class PurchaseReport(View):
             purchasedata = PurchaseList.objects.filter(p_date__range=[fromdate, todate])
             sum_purchase_qty = purchasedata.aggregate(Sum('purchase_qty'))['purchase_qty__sum']
             sum_purchase_price = purchasedata.aggregate(Sum('purchase_price'))['purchase_price__sum']
-            context = {'supplier': supplier, 'purchasedata': purchasedata, 'sum_purchase_qty': sum_purchase_qty,
-                       'sum_purchase_price': sum_purchase_price}
+            sum_logistic = purchasedata.aggregate(Sum('logistic'))['logistic__sum']
+            sum_purchase_total = purchasedata.aggregate(Sum('total_purchase_price'))['total_purchase_price__sum']
+            context = {'supplier': supplier,
+                       'purchasedata': purchasedata,
+                       'sum_purchase_qty': sum_purchase_qty,
+                       'sum_purchase_price': sum_purchase_price,
+                       'sum_logistic':sum_logistic,
+                       'sum_purchase_total':sum_purchase_total,
+                       }
             return render(request, 'purchasedata.html', context)
         else:
             supplier = Supplier.objects.all()
@@ -922,24 +963,72 @@ class DashboardView(UserRequiredMixin,View):
         first_date = today.replace(day=1)
         expense_type = 'Expense'
         exp_total = ExpenseReport.objects.filter(expense_date__range=[first_date, today],expense_type=expense_type).aggregate(Sum('amount'))['amount__sum']
-        purchase_total = PurchaseList.objects.filter(created_date__range=[first_date, today]).aggregate(Sum('purchase_price'))['purchase_price__sum']
+        purchase_total = PurchaseList.objects.filter(created_date__range=[first_date, today]).aggregate(Sum('total_purchase_price'))['total_purchase_price__sum']
 
-        # product_sale_list = Order.objects.all()
+        # item_list = Items.objects.all()
+        # paginator = Paginator(item_list, 3)  # Show 10 contacts per page.
+        #
+        # page_number = request.GET.get("page")
+        # page_obj = paginator.get_page(page_number)
 # chart data
-        c_product = CartProduct.objects.values('product__item_name','product__balance_qty').annotate(sum=Sum('subtotal'),quantity=Sum('quantity')).filter(created_at__range=[first_date, today])
+        purchasedata = PurchaseList.objects.all()
+        c_product = CartProduct.objects.values('product__item_name','product__sell_price','product__balance_qty','product__pruchase_price').annotate(sum=Sum('subtotal'),quantity=Sum('quantity'),pur=(F('product__sell_price')-F('product__pruchase_price'))*F('quantity')).filter(created_at__range=[first_date, today])
 
         sale_total = Order.objects.filter(created_at__range=[first_date, today]).aggregate(Sum('all_total'))['all_total__sum']
+        # profit_b = sale_total-purchase_total
+        if sale_total == None:
+            sale_total = 0
+        if purchase_total == None:
+            purchase_total = 0
+
+        profit_b = sale_total - purchase_total
+
+        gp_total = c_product.aggregate(gp=Sum((F('product__sell_price')-F('product__pruchase_price'))*F('quantity')))
+        total_sale_amt = c_product.aggregate(Sum('subtotal'))['subtotal__sum']
+
+        # print(total_sale_amt)
 
         context = {'c_product':c_product,
                    'sale_total':sale_total,
                    'purchase_total':purchase_total,
                    'exp_total':exp_total,
-                   # 'product_sale_list':product_sale_list,
+                   'profit_b':profit_b,
+                   'purchasedata':purchasedata,
+                   'gp_total':gp_total,
+                   'total_sale_amt':total_sale_amt,
+                   # 'page_obj':page_obj,
                    }
 
         return render(request, 'dashboard.html', context)
     def post(self,request):
-        pass
+        fromdate = request.POST.get('fromdate')
+        todate = request.POST.get('todate')
+        message = None
+        if not fromdate:
+            message = 'select from date'
+        elif not todate:
+            message = 'select to date'
+        if not message:
+            c_product = CartProduct.objects.values('product__item_name',
+                                                   'product__sell_price',
+                                                   'product__balance_qty',
+                                                   'product__pruchase_price').annotate(sum=Sum('subtotal'),
+                                                                                       quantity=Sum('quantity'),
+                                                                                       pur=(F('product__sell_price') - F('product__pruchase_price')) * F('quantity')).filter(created_at__range=[fromdate, todate])
+
+            gp_total = c_product.aggregate(
+                gp=Sum((F('product__sell_price') - F('product__pruchase_price')) * F('quantity')))
+            total_sale_amt = c_product.aggregate(Sum('subtotal'))['subtotal__sum']
+            context = {'c_product': c_product,
+                       'gp_total': gp_total,
+                       'total_sale_amt': total_sale_amt,
+                       'message':message,
+                       # 'page_obj':page_obj,
+                       }
+            return render(request, 'dashboard.html', context)
+        else:
+            return redirect('myapp:DashboardView')
+
 
 
 class DeliveryView(View):

@@ -13,7 +13,7 @@ class GetBarCode(forms.Form):
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['ordered_by', 'mobile', 'shipping_address','discount','delivery_fee','delivery_system','payment','deli_payment',]
+        fields = ['ordered_by', 'mobile', 'shipping_address','discount','delivery_fee','delivery_system','payment',]
         widgets = {
             'ordered_by': forms.TextInput(attrs={'class': 'form-control'}),
             'mobile': forms.TextInput(attrs={'class': 'form-control'}),

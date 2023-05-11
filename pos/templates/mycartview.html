@@ -172,7 +172,7 @@
             {% for p in queryset %}
             <tr class="">
                 <td class="table-plus">{{p.ordered_by}}</td>
-                <td><a href="{% url 'myapp:InvoiceDetailView' p.id%}"><strong>{{p.id}}</strong></a></td>
+                <td><a href="{% url 'myapp:pdf_invoice_create' p.id%}"><strong>{{p.id}}</strong></a></td>
                 <!--                <td>{{p.all_total}}</td>-->
                 <td>{{p.created_at}}</td>
                 <td>

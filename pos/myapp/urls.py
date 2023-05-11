@@ -43,8 +43,10 @@ urlpatterns = [
     path('LedgerCreateView/', LedgerCreateView.as_view(), name='LedgerCreateView'),
 
     path('', DashboardView.as_view(), name='DashboardView'),
+    # path('DashboardReportView/', DashboardReportView, name='DashboardReportView'),
     path('testbarcode/', testbarcode.as_view(), name='testbarcode'),
     path('DeliveryView', DeliveryView.as_view(), name= 'DeliveryView'),
+    path('pdf_invoice_create/<int:id>/', pdf_invoice_create, name='pdf_invoice_create'),
 
 
 ]

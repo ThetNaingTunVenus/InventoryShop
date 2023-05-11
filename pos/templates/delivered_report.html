@@ -26,7 +26,7 @@
         >
             <thead>
             <tr class="table-warning">
-<!--                <th class="table-plus datatable-nosort">Customer Name</th>-->
+                <th class="table-plus datatable-nosort">Customer Name</th>
                 <th>Invoice No</th>
                 <th>Amount</th>
 
@@ -39,7 +39,7 @@
             <tbody>
             {% for p in queryset %}
             <tr class="table-info">
-<!--                <td class="table-plus">{{p.ordered_by}}</td>-->
+                <td class="table-plus">{{p.ordered_by}}</td>
                 <td><a href="{% url 'myapp:InvoiceDetailView' p.id%}"><strong>{{p.id}}</strong></a></td>
                 <td>{{p.all_total}}</td>
 
@@ -71,7 +71,7 @@
             </tbody>
             <tfoot>
             <tr>
-<!--                <td></td>-->
+                <td></td>
                 <td>Grand Total</td>
                 <td><strong>{{sum}}</strong></td>
                 <td></td>

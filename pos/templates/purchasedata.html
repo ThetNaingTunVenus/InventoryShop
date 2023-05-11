@@ -107,6 +107,7 @@
                 <th class="text-center">Items</th>
                 <th class="text-center">Qty</th>
                 <th>Purchase Price</th>
+                <th>Logistic</th>
                 <th>Total</th>
 
 
@@ -120,6 +121,7 @@
                 <td>{{p.item_name}}</td>
                 <td>{{p.purchase_qty}}</td>
                 <td>{{p.purchase_price}}</td>
+                <td>{{p.logistic}}</td>
                 <td>{{p.total_purchase_price}}</td>
 
             </tr>
@@ -135,7 +137,8 @@
                 <th>TOTAL</th>
                 <th>{{sum_purchase_qty}}</th>
                 <th>{{sum_purchase_price}}</th>
-                <td></td>
+                <th>{{sum_logistic}}</th>
+                <th>{{sum_purchase_total}}</th>
             </tr>
             </tfoot>
         </table>

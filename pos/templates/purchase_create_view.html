@@ -73,6 +73,12 @@
                                 <input class="form-control" type="number" placeholder="0" name="sale_price">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-2 col-form-label">Logistic</label>
+                            <div class="col-sm-12 col-md-10">
+                                <input class="form-control" type="number" placeholder="0" name="logistic">
+                            </div>
+                        </div>
 
 
 
@@ -103,6 +109,7 @@
                 <th class="text-center">Items</th>
                 <th class="text-center">Qty</th>
                 <th>Purchase Price</th>
+                <th>Logistic</th>
                 <th>Total</th>
 
 
@@ -116,6 +123,7 @@
                 <td>{{p.item_name}}</td>
                 <td>{{p.purchase_qty}}</td>
                 <td>{{p.purchase_price}}</td>
+                <td>{{p.logistic}}</td>
                 <td>{{p.total_purchase_price}}</td>
 
             </tr>
