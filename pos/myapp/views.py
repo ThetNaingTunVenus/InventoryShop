@@ -763,6 +763,25 @@ class PurchaseReport(View):
             return render(request, 'purchasedata.html', context)
 
 
+
+class PurchaseDataDelete(View):
+    def get(self,request,pk):
+        pi = PurchaseList.objects.get(id=pk)
+        fm = PurchaseDataDeleteFrom(instance=pi)
+        return render(request, 'purchase_data_delete.html', {'form': fm})
+
+    def post(self, request,pk):
+        pi = PurchaseList.objects.get(id=pk)
+        item = Items.objects.get(item_name=pi.item_name)
+        item_n = item.balance_qty
+        pur_qty = pi.purchase_qty
+        remain_item_qty = int(item_n)-int(pur_qty)
+        item_update = Items.objects.filter(item_name=pi.item_name).update(balance_qty=remain_item_qty)
+        pi.delete()
+        return redirect('myapp:PurchaseData')
+
+
+
 # DamageItems
 class DamageItemView(View):
     def get(self,request):

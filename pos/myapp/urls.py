@@ -21,6 +21,7 @@ urlpatterns = [
     path('PurchaseCreateView/<int:id>/', PurchaseCreateView.as_view(), name='PurchaseCreateView'),
     path('PurchaseData/', PurchaseData.as_view(), name='PurchaseData'),
     path('PurchaseReport/', PurchaseReport.as_view(), name='PurchaseReport'),
+    path('PurchaseDataDelete/<int:pk>/', PurchaseDataDelete.as_view(), name='PurchaseDataDelete'),
 
     path('SaleInvoiceView/', SaleInvoiceView.as_view(), name='SaleInvoiceView'),
     path('SaleInvoiceReportFilter/', SaleInvoiceReportFilter.as_view(), name='SaleInvoiceReportFilter'),

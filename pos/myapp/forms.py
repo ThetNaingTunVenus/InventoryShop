@@ -68,3 +68,13 @@ class StatusChangeForm(forms.ModelForm):
         model = Order
         fields = ['deli_payment']
         # widgets = {'ordered_staus':forms.Select(attrs={'class':'form-control col-md-4'})}
+
+class PurchaseDataDeleteFrom(forms.ModelForm):
+    class Meta:
+        model = PurchaseList
+        fields = ['item_name','purchase_qty']
+        widgets = {
+            # 'p_date':forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
+            'item_name': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'purchase_qty': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+        }

@@ -98,7 +98,7 @@
     </div>
     <div class="pb-20">
         <table
-                class="table hover multiple-select-row data-table-export nowrap"
+                class="table hover data-table-export nowrap"
         >
             <thead>
             <tr class="table-info">
@@ -109,6 +109,7 @@
                 <th>Purchase Price</th>
                 <th>Logistic</th>
                 <th>Total</th>
+                <th>Action</th>
 
 
             </tr>
@@ -123,6 +124,7 @@
                 <td>{{p.purchase_price}}</td>
                 <td>{{p.logistic}}</td>
                 <td>{{p.total_purchase_price}}</td>
+                <td><a href="{% url 'myapp:PurchaseDataDelete' p.id %}" class="btn btn-sm btn-danger"><i class="icon-copy bi bi-trash"></i></a></td>
 
             </tr>
             {% endfor %}
@@ -139,6 +141,7 @@
                 <th>{{sum_purchase_price}}</th>
                 <th>{{sum_logistic}}</th>
                 <th>{{sum_purchase_total}}</th>
+                <th></th>
             </tr>
             </tfoot>
         </table>
