@@ -1004,8 +1004,9 @@ class DashboardView(UserRequiredMixin,View):
 
         gp_total = c_product.aggregate(gp=Sum((F('product__sell_price')-F('product__pruchase_price'))*F('quantity')))
         total_sale_amt = c_product.aggregate(Sum('subtotal'))['subtotal__sum']
+        total_sale_qty = c_product.aggregate(Sum('quantity'))['quantity__sum']
 
-        # print(total_sale_amt)
+        # print(total_sale_qty)
 
         context = {'c_product':c_product,
                    'sale_total':sale_total,
@@ -1015,6 +1016,7 @@ class DashboardView(UserRequiredMixin,View):
                    'purchasedata':purchasedata,
                    'gp_total':gp_total,
                    'total_sale_amt':total_sale_amt,
+                   'total_sale_qty':total_sale_qty,
                    # 'page_obj':page_obj,
                    }
 
