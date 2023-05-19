@@ -18,7 +18,7 @@ from xhtml2pdf import pisa
 
 # Create your views here.
 def test(request):
-    return render(request, 'test_inv.html')
+    return render(request, 'test_slip.html')
 
 # ===================================================User Log In ===============================
 class UserRequiredMixin(object):
