@@ -31,6 +31,7 @@ urlpatterns = [
     path('GPView', GPView.as_view(), name='GPView'),
     path('Deliverpayment/<int:pk>', Deliverpayment.as_view(), name='Deliverpayment'),
     path('DeliveryPaymentReportView/', DeliveryPaymentReportView, name='DeliveryPaymentReportView'),
+    path('InvoiceThermalPrintView/<int:pk>/', InvoiceThermalPrintView.as_view(), name='InvoiceThermalPrintView'),
 
     path('DamageItemView/', DamageItemView.as_view(), name='DamageItemView'),
     path('DamageInvoiceView/<int:id>/', DamageInvoiceView.as_view(), name='DamageInvoiceView'),

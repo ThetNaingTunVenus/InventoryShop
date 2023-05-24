@@ -178,6 +178,7 @@
                 <td>
                     <a href="{% url 'myapp:InvoiceDetailView' p.id%}" class="btn btn-sm btn-outline-primary">print
                         preview</a>
+                    <a href="{% url 'myapp:InvoiceThermalPrintView' p.id%}" target="_blank" class="btn btn-sm btn-outline-danger">Print</a>
                 </td>
 
             </tr>
