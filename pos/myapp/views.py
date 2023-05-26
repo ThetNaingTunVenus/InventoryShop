@@ -823,6 +823,7 @@ class DamageProductView(UserRequiredMixin,View):
         product = request.POST.get('product')
         rate = request.POST.get('rate')
         quantity = request.POST.get('quantity')
+        ret_deli = request.POST.get('ret_deli')
         return_date =datetime.date.today()
         item_name = Items.objects.get(id=product)
         message = None
@@ -834,10 +835,10 @@ class DamageProductView(UserRequiredMixin,View):
             invtentory_date = Items.objects.filter(item_name=item_name)
             qty = invtentory_date[0].balance_qty
             remaing = int(qty) - int(returnqty)
-            inv_update = Items.objects.filter(item_name=item_name).update(balance_qty=remaing)
+            # inv_update = Items.objects.filter(item_name=item_name).update(balance_qty=remaing)
 
             damage_items = DamageItems(item_name=item_name, quantity=returnqty, description=return_desc,
-                                       return_date=return_date)
+                                       return_date=return_date,return_delivery_charge=0)
             damage_items.save()
 
             damage_rp = DamageItems.objects.all()
